@@ -24,7 +24,7 @@ if (!entry) {
 }
 
 // Notice how your arguments are in an array of strings
-var child = spawn(path.resolve(__dirname, 'node_modules/.bin/webpack-cli'), [
+var child = spawn(path.resolve(process.cwd(), 'node_modules/.bin/webpack-cli'), [
     '--config',
     'webpack.config.js',
     '--output-path',
