@@ -5,7 +5,7 @@ const fs = require('fs');
 const spawn = require('child_process').spawn;
 
 var entry;
-for (var search of ['src/main.ts']) {
+for (var search of ['src/main.js', 'src/main.ts']) {
     var resolved = path.resolve(process.cwd(), search);
     if (fs.existsSync(resolved)) {
         entry = resolved;
