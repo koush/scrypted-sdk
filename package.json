@@ -1,6 +1,6 @@
 {
   "name": "scrypted-deploy",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,7 @@
   },
   "bin": {
     "scrypted-webpack": "bin/scrypted-webpack.js",
+    "scrypted-deploy-debug": "bin/scrypted-deploy-debug.js",
     "scrypted-deploy": "bin/scrypted-deploy.js",
     "scrypted-debug": "bin/scrypted-debug.js"
   },
