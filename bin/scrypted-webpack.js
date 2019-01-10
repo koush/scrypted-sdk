@@ -27,14 +27,14 @@ if (!entry) {
 // Notice how your arguments are in an array of strings
 var child = spawn(path.resolve(process.cwd(), 'node_modules/.bin/webpack-cli'), [
     '--config',
-    'webpack.config.js',
+    path.resolve(__dirname, '..', 'webpack.config.js'),
     '--output-path',
     out,
+    '--output-filename',
+    'main.js',
     '--entry',
     entry,
-], {
-    cwd: path.resolve(__dirname, '..'),
-});
+]);
 
 child.stdout.on('data', function (data) {
     process.stdout.write(data);

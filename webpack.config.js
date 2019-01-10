@@ -1,17 +1,15 @@
 const path = require('path');
-const fs = require('fs');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 var out;
+const cwd = process.cwd();
+
 if (process.env.NODE_ENV == 'production')
-    out = path.resolve(__dirname, 'dist');
+    out = path.resolve(cwd, 'dist');
 else
-    out = path.resolve(__dirname, 'out');
+    out = path.resolve(cwd, 'out');
 
 module.exports = {
     output: {
-        path: out,
-        filename: 'main.js',
         devtoolModuleFilenameTemplate: function (info) {
             return path.relative(out, info.absoluteResourcePath);
         },
