@@ -13,16 +13,22 @@ for (var search of ['src/main.ts']) {
     }
 }
 
+var out;
+if (process.env.NODE_ENV == 'production')
+    out = path.resolve(process.cwd(), 'dist');
+else
+    out = path.resolve(process.cwd(), 'out');
+
 if (!entry) {
     throw new Error('unable to locate src/main.js or src/main.ts');
 }
 
 // Notice how your arguments are in an array of strings
-var child = spawn(path.resolve(__dirname, '../node_modules/.bin/webpack-cli'), [
+var child = spawn(path.resolve(__dirname, 'node_modules/.bin/webpack-cli'), [
     '--config',
     'webpack.config.js',
     '--output-path',
-    path.resolve(process.cwd(), 'out'),
+    out,
     '--entry',
     entry,
 ], {
