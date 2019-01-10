@@ -20,7 +20,8 @@ else
     out = path.resolve(process.cwd(), 'out');
 
 if (!entry) {
-    throw new Error('unable to locate src/main.js or src/main.ts');
+    console.error('unable to locate src/main.js or src/main.ts');
+    return 1;
 }
 
 // Notice how your arguments are in an array of strings

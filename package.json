@@ -1,6 +1,6 @@
 {
   "name": "scrypted-deploy",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,11 +8,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "scrypted-webpack": "bin/scrypted-webpack.js"
+    "scrypted-webpack": "bin/scrypted-webpack.js",
+    "scrypted-deploy": "bin/scrypted-deploy.js",
+    "scrypted-debug": "bin/scrypted-debug.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "@babel/core": "^7.2.2",
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.2.3",
