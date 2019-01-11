@@ -46,6 +46,12 @@ module.exports = {
         ]
     },
 
+    resolve: {
+        alias: {
+            dgram: path.resolve(__dirname, 'polyfill/dgram.js')
+        },
+    },
+
     stats: {
         colors: true
     },
