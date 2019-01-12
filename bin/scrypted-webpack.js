@@ -3,21 +3,31 @@ const path = require('path');
 const process = require('process');
 const fs = require('fs');
 const spawn = require('child_process').spawn;
+const cwd = process.cwd();
 
 var entry;
 for (var search of ['src/main.js', 'src/main.ts']) {
-    var resolved = path.resolve(process.cwd(), search);
+    var resolved = path.resolve(cwd, search);
     if (fs.existsSync(resolved)) {
         entry = resolved;
         break;
     }
 }
 
+var webpackConfig;
+var customWebpackConfig = path.resolve(cwd, 'webpack.config.js');
+if (fs.existsSync(customWebpackConfig)) {
+    webpackConfig = customWebpackConfig;
+}
+else {
+    webpackConfig = path.resolve(__dirname, '..', 'webpack.config.js');
+}
+
 var out;
 if (process.env.NODE_ENV == 'production')
-    out = path.resolve(process.cwd(), 'dist');
+    out = path.resolve(cwd, 'dist');
 else
-    out = path.resolve(process.cwd(), 'out');
+    out = path.resolve(cwd, 'out');
 
 if (!entry) {
     console.error('unable to locate src/main.js or src/main.ts');
@@ -25,9 +35,9 @@ if (!entry) {
 }
 
 // Notice how your arguments are in an array of strings
-var child = spawn(path.resolve(process.cwd(), 'node_modules/.bin/webpack-cli'), [
+var child = spawn(path.resolve(cwd, 'node_modules/.bin/webpack-cli'), [
     '--config',
-    path.resolve(__dirname, '..', 'webpack.config.js'),
+    webpackConfig,
     '--output-path',
     out,
     '--output-filename',
