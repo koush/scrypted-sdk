@@ -55,4 +55,6 @@ child.stderr.on('data', function (data) {
 });
 
 child.on('exit', function (data) {
+    if (data)
+        throw new Error('webpack failed: ' + data);
 });
