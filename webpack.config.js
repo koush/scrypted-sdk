@@ -46,6 +46,10 @@ module.exports = {
         ]
     },
 
+    node: {
+        Buffer: false,
+    },
+
     resolve: {
         alias: {
             dgram: path.resolve(__dirname, 'polyfill/dgram.js')
