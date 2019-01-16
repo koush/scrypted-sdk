@@ -36,6 +36,7 @@ if (!entry) {
 
 // Notice how your arguments are in an array of strings
 var child = spawn(path.resolve(cwd, 'node_modules/.bin/webpack-cli'), [
+    // "--json",
     '--config',
     webpackConfig,
     '--output-path',

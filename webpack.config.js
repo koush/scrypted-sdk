@@ -47,6 +47,10 @@ module.exports = {
         ]
     },
 
+    externals: {
+        "core-js/modules/es6.typed.uint8-array": "Uint8Array",
+    },
+
     node: {
         // in your own webpack.config.js, you might want to change this to false
         // to reduce the webpack size. however, duktape's Buffer polyfill is

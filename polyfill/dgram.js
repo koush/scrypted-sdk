@@ -71,7 +71,7 @@ class Udp extends EventEmitter {
             cb = arguments[i++];
         }
 
-        return __datagramSend(this.socket, new Uint8Array(message), offset, length, port, address, cb);
+        return __datagramSend(this.socket, message, offset, length, port, address, cb);
     }
 
     address() {
