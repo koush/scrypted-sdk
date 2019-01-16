@@ -68,17 +68,18 @@ module.exports = {
     optimization: {
         // can not minimize since duktape only does line based breakpoints
         // so only minimize in production.
+        minimize: false,
         // minimize: process.env.NODE_ENV == 'production',
-        minimizer: [
-            new TerserPlugin({
-                test: /\.js(\?.*)?$/i,
-                sourceMap: true,
-                terserOptions: {
-                    // something under compress is causing duktape to choke.
-                    compress: false,
-                }
-            }),
-        ],
+        // minimizer: [
+        //     new TerserPlugin({
+        //         test: /\.js(\?.*)?$/i,
+        //         sourceMap: true,
+        //         terserOptions: {
+        //             // something under compress is causing duktape to choke.
+        //             compress: false,
+        //         }
+        //     }),
+        // ],
     },
 
     devtool: 'source-map'
