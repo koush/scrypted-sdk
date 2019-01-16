@@ -1,8 +1,6 @@
 import EventEmitter from 'eventemitter3';
-// import { inherits } from 'util';
 
 class Udp extends EventEmitter {
-    // EventEmitter.call(this);
 
     close() {
         if (this.socket) {
@@ -117,13 +115,6 @@ class Udp extends EventEmitter {
     }
 
 }
-
-// inherits(Udp, EventEmitter);
-
-
-// events...
-// error
-// message
 
 function createSocket(type, cb) {
     var ret = new Udp();
