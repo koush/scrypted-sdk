@@ -1,120 +1,127 @@
 import EventEmitter from 'eventemitter3';
+// import { inherits } from 'util';
 
-class Udp extends EventEmitter {
+function Udp() {
+    EventEmitter.call(this);
+}
 
-    close() {
-        if (this.socket) {
-            this.socket.close();
-            this.socket = null;
-        }
+inherits(Udp, EventEmitter);
+
+Udp.prototype.close = function() {
+    if (this.socket) {
+        this.socket.close();
+        this.socket = null;
     }
+}
 
-    bind() {
-        var port;
-        var address;
-        var cb;
+Udp.prototype.bind = function() {
+    var port;
+    var address;
+    var cb;
 
-        var type = typeof arguments[0];
+    var type = typeof arguments[0];
+    if (type == 'function') {
+        cb = arguments[0];
+        port = 0;
+    }
+    else if (type == 'number') {
+        port = arguments[0];
+        type = typeof arguments[1];
         if (type == 'function') {
-            cb = arguments[0];
-            port = 0;
-        }
-        else if (type == 'number') {
-            port = arguments[0];
-            type = typeof arguments[1];
-            if (type == 'function') {
-                cb = arguments[1];
-            }
-            else if (type == 'string') {
-                address = arguments[1];
-                cb = arguments[2];
-            }
-            else {
-                throw new Error('unexpected argument');
-            }
-        }
-        else if (type == 'object') {
-            var port = arguments[0].port || 0;
-            var address = arguments[0].address;
             cb = arguments[1];
+        }
+        else if (type == 'string') {
+            address = arguments[1];
+            cb = arguments[2];
         }
         else {
             throw new Error('unexpected argument');
         }
-
-        this.ensureSocket(address, port, cb);
+}
+    else if (type == 'object') {
+        var port = arguments[0].port || 0;
+        var address = arguments[0].address;
+        cb = arguments[1];
+    }
+    else {
+        throw new Error('unexpected argument');
     }
 
-    setBroadcast(broadcast) {
-        __datagramSetBroadcast(this.socket, broadcast);
+    this.ensureSocket(address, port, cb);
+}
+
+Udp.prototype.setBroadcast = function(broadcast) {
+    __datagramSetBroadcast(this.socket, broadcast);
+}
+
+Udp.prototype.send = function() {
+    var i = 0;
+    var message = arguments[i++];
+    var offset = 0;
+    var length = message.length;
+    var port;
+    var address;
+    var cb;
+    if (typeof arguments[i] == 'number') {
+        offset = arguments[i++];
+    }
+    if (typeof arguments[i] == 'number') {
+        length = arguments[i++];
+    }
+    port = arguments[i++];
+    if (typeof arguments[i] == 'string') {
+        address = arguments[i++]
+    }
+    if (i < arguments.length) {
+        cb = arguments[i++];
     }
 
-    send() {
-        var i = 0;
-        var message = arguments[i++];
-        var offset = 0;
-        var length = message.length;
-        var port;
-        var address;
-        var cb;
-        if (typeof arguments[i] == 'number') {
-            offset = arguments[i++];
-        }
-        if (typeof arguments[i] == 'number') {
-            length = arguments[i++];
-        }
-        port = arguments[i++];
-        if (typeof arguments[i] == 'string') {
-            address = arguments[i++]
-        }
-        if (i < arguments.length) {
-            cb = arguments[i++];
-        }
+    return __datagramSend(this.socket, new Uint8Array(message), offset, length, port, address, cb);
+}
 
-        return __datagramSend(this.socket, message, offset, length, port, address, cb);
+Udp.prototype.address = function() {
+    return null;
+}
+
+Udp.prototype.ensureSocket = function(address, port, cb) {
+    if (this.socket) {
+        cb();
+        return;
     }
 
-    address() {
-        return null;
-    }
-
-    ensureSocket(address, port, cb) {
-        if (this.socket) {
-            cb();
+    __datagramCreate(address, port,
+    function socketCallback(e, result) {
+        if (e != null) {
+            this.emit('error', new Error(e.getMessage()));
             return;
         }
 
-        __datagramCreate(address, port,
-            function socketCallback(e, result) {
-                if (e != null) {
-                    this.emit('error', new Error(e.getMessage()));
-                    return;
-                }
-
-                this.socket = result;
-                this.address = result.getLocalAddress().getHostAddress();
-                this.port = result.getLocalPort();
-                cb();
-            }.bind(this),
-            function closeCallback() {
-                this.emit('close')
-            }.bind(this),
-            function errorCallback(e) {
-                this.emit('error', new Error(e.getMessage()));
-            }.bind(this),
-            function messageCallback(data, remoteAddress) {
-                var buffer = new Buffer(data);
-                var rinfo = {
-                    address: remoteAddress.getHostString(),
-                    family: 'IPv4',
-                    port: remoteAddress.getPort(),
-                    size: data.length,
-                }
-                this.emit('message', buffer, rinfo);
-            }.bind(this));
-    }
-
+        this.socket = result;
+        this.address = result.getLocalAddress().getHostAddress();
+        this.port = result.getLocalPort();
+        cb();
+    }.bind(this),
+    function closeCallback() {
+        this.emit('close')
+    }.bind(this),
+    function errorCallback(e) {
+        this.emit('error', new Error(e.getMessage()));
+    }.bind(this),
+    function messageCallback(data, remoteAddress) {
+        var buffer = new Buffer(data);
+        var rinfo = {
+            address: remoteAddress.getHostString(),
+            family: 'IPv4',
+            port: remoteAddress.getPort(),
+            size: data.length,
+        }
+        this.emit('message', buffer, rinfo);
+    }.bind(this));
 }
+
+// events...
+// error
+// message
 
 function createSocket(type, cb) {
     var ret = new Udp();
