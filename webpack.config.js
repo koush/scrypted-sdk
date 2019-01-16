@@ -47,7 +47,10 @@ module.exports = {
     },
 
     node: {
-        Buffer: false,
+        // in your own webpack.config.js, you might want to change this to false
+        // to reduce the webpack size. however, duktape's Buffer polyfill is
+        // incomplete.
+        Buffer: true,
     },
 
     resolve: {
