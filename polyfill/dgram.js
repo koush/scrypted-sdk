@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-// import { inherits } from 'util';
+import { inherits } from 'util';
 
 function Udp() {
     EventEmitter.call(this);
