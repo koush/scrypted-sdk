@@ -1,4 +1,5 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 var out;
 const cwd = process.cwd();
@@ -67,7 +68,17 @@ module.exports = {
     optimization: {
         // can not minimize since duktape only does line based breakpoints
         // so only minimize in production.
-        minimize: process.env.NODE_ENV == 'production',
+        // minimize: process.env.NODE_ENV == 'production',
+        minimizer: [
+            new TerserPlugin({
+                test: /\.js(\?.*)?$/i,
+                sourceMap: true,
+                terserOptions: {
+                    // something under compress is causing duktape to choke.
+                    compress: false,
+                }
+            }),
+        ],
     },
 
     devtool: 'source-map'
