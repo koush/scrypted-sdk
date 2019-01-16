@@ -52,8 +52,9 @@ module.exports = {
 
     resolve: {
         alias: {
-            dgram: path.resolve(__dirname, 'polyfill/dgram.js')
-        },
+            dgram: path.resolve(__dirname, 'src/dgram'),
+            os: path.resolve(__dirname, 'src/os'),
+        }
     },
 
     stats: {
