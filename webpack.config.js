@@ -1,5 +1,7 @@
 const path = require('path');
+const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
+const InjectPlugin = require('webpack-inject-plugin').default;
 
 var out;
 const cwd = process.cwd();
@@ -68,6 +70,12 @@ module.exports = {
     stats: {
         colors: true
     },
+
+    plugins: [
+        new InjectPlugin(function() {
+            return fs.readFileSync(path.resolve(__dirname, 'inject/buffer.js'));
+        }),
+    ],
 
     optimization: {
         // can not minimize since duktape only does line based breakpoints

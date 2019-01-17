@@ -44,7 +44,7 @@ var child = spawn(path.resolve(cwd, 'node_modules/.bin/webpack-cli'), [
     '--output-filename',
     'main.js',
     '--entry',
-    entry,
+    "main=" + entry,
 ]);
 
 child.stdout.on('data', function (data) {

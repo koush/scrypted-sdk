@@ -1,6 +1,10 @@
 const bufferToString = Buffer.prototype.toString;
 const bufferWrite = Buffer.prototype.write;
 
+// Duktape Buffer.toString and Buffer.write do not support any encodings but utf8.
+// here's quick support for hex.
+// TODO: Need to also add base64 as that is frequently used.
+
 Buffer.prototype.toString = function (encoding, start, end) {
     if (encoding != 'hex') {
         return bufferToString.apply(this, arguments);
