@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const TerserPlugin = require('terser-webpack-plugin');
 const InjectPlugin = require('webpack-inject-plugin').default;
 
 var out;
@@ -83,18 +82,10 @@ module.exports = {
     optimization: {
         // can not minimize since duktape only does line based breakpoints
         // so only minimize in production.
-        minimize: false,
-        // minimize: process.env.NODE_ENV == 'production',
-        // minimizer: [
-        //     new TerserPlugin({
-        //         test: /\.js(\?.*)?$/i,
-        //         sourceMap: true,
-        //         terserOptions: {
-        //             // something under compress is causing duktape to choke.
-        //             compress: false,
-        //         }
-        //     }),
-        // ],
+        // UPDATE: this may not be true. unable to determine cause. could be
+        // some textarea copy paste behavior that occurred while I was testing.
+        // minimize: false,
+        minimize: process.env.NODE_ENV == 'production',
     },
 
     devtool: 'source-map'
