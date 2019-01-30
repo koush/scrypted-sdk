@@ -24,10 +24,13 @@ module.exports = {
         rules: [
             {
                 test: /\.m?js$/,
-                exclude: /(node_modules|bower_components)/,
+                // unsure if this is correct... need to transpile node modules at times.
+                // exclude: /(node_modules|bower_components)/,
+                exclude: /(webpack|core-js)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
+                        "plugins": ["@babel/plugin-transform-modules-commonjs"],
                         "presets": [
                             [
                                 "@babel/preset-env",
@@ -50,14 +53,14 @@ module.exports = {
     },
 
     externals: {
-        "core-js/modules/es6.typed.uint8-array": "Uint8Array",
+        // "core-js/modules/es6.typed.uint8-array": "Uint8Array",
     },
 
     node: {
         // in your own webpack.config.js, you might want to change this to false
         // to reduce the webpack size. however, duktape's Buffer polyfill is
         // incomplete.
-        Buffer: true,
+        Buffer: false,
     },
 
     resolve: {

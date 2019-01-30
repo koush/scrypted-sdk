@@ -44,8 +44,11 @@ Buffer.prototype.write = function(string) {
         }
     }
 
-    if (encoding != 'hex') {
+    if (!encoding || encoding == 'utf8') {
         return bufferToString.apply(this, arguments);
+    }
+    if (encoding != 'hex') {
+        throw new Error(`Butter.toString(${encoding}) encoding is not implemented in scrypted-deploy.`)
     }
 
     if (!offset) {
