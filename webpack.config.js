@@ -26,7 +26,7 @@ module.exports = {
                 test: /\.m?js$/,
                 // unsure if this is correct... need to transpile node modules at times.
                 // exclude: /(node_modules|bower_components)/,
-                exclude: /(webpack|core-js)/,
+                exclude: /(core-js)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
