@@ -53,7 +53,7 @@ module.exports = {
     },
 
     externals: {
-        // "core-js/modules/es6.typed.uint8-array": "Uint8Array",
+        "core-js/modules/es6.typed.uint8-array": "Uint8Array",
     },
 
     node: {
