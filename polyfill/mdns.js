@@ -17,6 +17,7 @@ Browser.prototype.start = function() {
             name: result.name,
             addresses: [result.host],
             port: result.port,
+            txtRecord: result.attributes,
         })
     }.bind(this));
 }
