@@ -11,6 +11,7 @@ else
     out = path.resolve(cwd, 'out');
 
 module.exports = {
+    mode: process.env.NODE_ENV || 'development',
     output: {
         devtoolModuleFilenameTemplate: function (info) {
             return path.relative(out, info.absoluteResourcePath);
