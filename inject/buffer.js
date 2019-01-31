@@ -34,6 +34,15 @@ Object.defineProperty(Buffer.prototype, "length", {
     }
 });
 
+Object.defineProperty(ArrayBuffer.prototype, "length", {
+    get: function() {
+        return this.byteLength;
+    },
+    set: function() {
+        throw new Error("length is readonly")
+    }
+});
+
 Buffer.prototype.write = function (string) {
     var offset;
     var length;
