@@ -56,9 +56,11 @@ module.exports = {
     },
 
     node: {
-        // in your own webpack.config.js, you might want to change this to false
-        // to reduce the webpack size. however, duktape's Buffer polyfill is
-        // incomplete.
+        // the duktape buffer polyfill is somewhat incomplete and does not
+        // support encodings.
+        // you may want to change this to true, but this will increase the
+        // webpack size, and net code may no longer unless the polyfill buffer
+        // is converted back to a Duktape buffer.
         Buffer: false,
         __dirname: true,
     },

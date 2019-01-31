@@ -25,7 +25,16 @@ Buffer.prototype.toString = function (encoding, start, end) {
     return ret;
 }
 
-Buffer.prototype.write = function(string) {
+Object.defineProperty(Buffer.prototype, "length", {
+    get: function() {
+        return this.byteLength;
+    },
+    set: function() {
+        throw new Error("length is readonly")
+    }
+});
+
+Buffer.prototype.write = function (string) {
     var offset;
     var length;
     var encoding;
