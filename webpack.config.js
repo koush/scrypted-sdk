@@ -60,12 +60,18 @@ module.exports = {
         // to reduce the webpack size. however, duktape's Buffer polyfill is
         // incomplete.
         Buffer: false,
+        __dirname: true,
     },
 
     resolve: {
         alias: {
             dgram: path.resolve(__dirname, 'polyfill/dgram'),
             os: path.resolve(__dirname, 'polyfill/os'),
+            net: path.resolve(__dirname, 'polyfill/net'),
+            tls: path.resolve(__dirname, 'polyfill/tls'),
+            fs: path.resolve(__dirname, 'polyfill/fs'),
+            mdns: path.resolve(__dirname, 'polyfill/mdns'),
+            'safe-buffer': path.resolve(__dirname, 'polyfill/safe-buffer'),
         }
     },
 
