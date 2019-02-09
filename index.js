@@ -31,14 +31,12 @@ exports.deploy = function(debugHost) {
     
         axios.post(debugUrl, fileContents,
             {
+                maxRedirects: 0,
                 timeout: 10000,
                 headers: {"Content-Type": "text/plain"}
             }
         )
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Error during deployment: ' + response.data)
-            }
             console.log(`deployed to ${debugHost}`);
             resolve();
         })
@@ -57,12 +55,10 @@ exports.debug = function(debugHost) {
         console.log(`initiating debugger on ${debugHost}`);
     
         axios.post(debugUrl, {
+            maxRedirects: 0,
             timeout: 10000,
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Error during deployment: ' + response.data)
-            }
             console.log(`debugger ready on ${debugHost}`);
             resolve();
         })
