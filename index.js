@@ -24,7 +24,7 @@ exports.deploy = function(debugHost) {
             return 3;
         }
     
-        const debugUrl = `https://${debugHost}:9443/component/script/deploy`
+        const debugUrl = `https://${debugHost}:9443/web/component/script/deploy`
     
         const fileContents = fs.readFileSync(main).toString();
         console.log(`deploying to ${debugHost}`);
@@ -35,7 +35,10 @@ exports.deploy = function(debugHost) {
                 headers: {"Content-Type": "text/plain"}
             }
         )
-        .then(() => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error during deployment: ' + response.data)
+            }
             console.log(`deployed to ${debugHost}`);
             resolve();
         })
@@ -50,13 +53,16 @@ exports.debug = function(debugHost) {
     return new Promise((resolve, reject) => {
         const outFilename = 'main.js';
 
-        const debugUrl = `https://${debugHost}:9443/component/script/debug?filename=${outFilename}`
+        const debugUrl = `https://${debugHost}:9443/web/component/script/debug?filename=${outFilename}`
         console.log(`initiating debugger on ${debugHost}`);
     
         axios.post(debugUrl, {
             timeout: 10000,
         })
-        .then(() => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error during deployment: ' + response.data)
+            }
             console.log(`debugger ready on ${debugHost}`);
             resolve();
         })
