@@ -1,8 +1,9 @@
 import EventEmitter from 'events';
 import { inherits } from 'util';
 
-function Udp() {
+function Udp(family) {
     EventEmitter.call(this);
+    this.family = family;
 }
 
 inherits(Udp, EventEmitter);
@@ -37,7 +38,7 @@ Udp.prototype.bind = function() {
         else {
             throw new Error('unexpected argument');
         }
-}
+    }
     else if (type == 'object') {
         var port = arguments[0].port || 0;
         var address = arguments[0].address;
@@ -45,6 +46,15 @@ Udp.prototype.bind = function() {
     }
     else {
         throw new Error('unexpected argument');
+    }
+
+    if (!address) {
+        if (this.family == 'udp4') {
+            address = "0.0.0.0";
+        }
+        else if (this.family == 'udp6') {
+            address = "::";
+        }
     }
 
     this.ensureSocket(address, port, cb);
@@ -81,6 +91,8 @@ Udp.prototype.send = function() {
 
 Udp.prototype.address = function() {
     return null;
+}
+Udp.prototype.unref = function() {
 }
 
 Udp.prototype.ensureSocket = function(address, port, cb) {
@@ -123,8 +135,8 @@ Udp.prototype.ensureSocket = function(address, port, cb) {
 // error
 // message
 
-function createSocket(type, cb) {
-    var ret = new Udp();
+function createSocket(family, cb) {
+    var ret = new Udp(family);
     if (cb) {
         ret.on('data', cb);
     }

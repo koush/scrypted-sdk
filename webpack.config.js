@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const InjectPlugin = require('webpack-inject-plugin').default;
+const webpack = require('webpack');
 
 var out;
 const cwd = process.cwd();
@@ -74,6 +75,7 @@ module.exports = {
             tls: path.resolve(__dirname, 'polyfill/tls'),
             fs: path.resolve(__dirname, 'polyfill/fs'),
             mdns: path.resolve(__dirname, 'polyfill/mdns'),
+            buffer: path.resolve(__dirname, 'polyfill/safe-buffer'),
             'safe-buffer': path.resolve(__dirname, 'polyfill/safe-buffer'),
         }
     },
@@ -83,9 +85,12 @@ module.exports = {
     },
 
     plugins: [
-        new InjectPlugin(function() {
-            return fs.readFileSync(path.resolve(__dirname, 'inject/buffer.js'));
+        new InjectPlugin(function () {
+            return fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'));
         }),
+        new webpack.DefinePlugin({
+            'process.env.SSDP_COV': false,
+        })
     ],
 
     optimization: {

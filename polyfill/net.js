@@ -135,6 +135,8 @@ Socket.prototype.setNoDelay = function () {
 }
 Socket.prototype.setKeepAlive = function () {
 }
+Socket.prototype.unref = function() {
+}
 
 function createConnection() {
     var socket = new Socket();
