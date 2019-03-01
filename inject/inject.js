@@ -75,7 +75,7 @@ Buffer.prototype.write = function (string) {
         return bufferToString.apply(this, arguments);
     }
     if (encoding != 'hex') {
-        throw new Error(`Buffer.toString(${encoding}) encoding is not implemented in scrypted-deploy.`)
+        throw new Error('Buffer.toString("' + encoding + '") is not implemented in scrypted-deploy.')
     }
 
     if (!offset) {
