@@ -1,6 +1,6 @@
 {
   "name": "@scrypted/sdk",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -31,5 +31,8 @@
     "webpack": "^4.28.1",
     "webpack-cli": "^3.1.2",
     "webpack-inject-plugin": "^1.0.2"
+  },
+  "resolutions": {
+    "terser": "3.14.*"
   }
 }
