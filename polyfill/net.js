@@ -65,7 +65,8 @@ Socket.prototype.connect = function () {
             this.emit('error', new Error(e.getMessage()));
         }.bind(this),
         function (data) {
-            // data
+            this._socket.pause();
+
             data = new Buffer(data);
             if (!this._reading) {
                 this._pending = Buffer.concat([this._pending, data]);
@@ -78,9 +79,6 @@ Socket.prototype.connect = function () {
             this._pending = remaining;
             if (more) {
                 this._socket.resume();
-            }
-            else {
-                this._socket.pause();
             }
         }.bind(this),
         function (socket) {

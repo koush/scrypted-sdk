@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const scrypted = require('../index.js');
+const scrypted = require('./index.js');
 
 function report(err) {
     process.nextTick(() => {

@@ -76,6 +76,7 @@ module.exports = {
             fs: path.resolve(__dirname, 'polyfill/fs'),
             mdns: path.resolve(__dirname, 'polyfill/mdns'),
             buffer: path.resolve(__dirname, 'polyfill/safe-buffer'),
+            buffertools: path.resolve(__dirname, 'node_modules/browserify-buffertools'),
             'safe-buffer': path.resolve(__dirname, 'polyfill/safe-buffer'),
         }
     },

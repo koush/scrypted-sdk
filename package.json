@@ -1,6 +1,6 @@
 {
   "name": "@scrypted/sdk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "axios": "^0.18.0",
     "babel-loader": "^8.0.4",
     "babel-polyfill": "^6.26.0",
+    "browserify-buffertools": "^1.0.2",
     "events": "^3.0.0",
     "node-cmd": "^3.0.0",
     "terser": "^3.14.1",
