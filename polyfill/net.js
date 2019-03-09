@@ -60,7 +60,7 @@ Socket.prototype.connect = function () {
             // close
             this.emit('close')
         }.bind(this),
-        function () {
+        function (e) {
             // error
             this.emit('error', new Error(e.getMessage()));
         }.bind(this),

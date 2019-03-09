@@ -1,3 +1,1 @@
-
-exports.HttpClient = require('./lib/http-stream').HttpClient;
-exports.HttpRequest = require('./lib/http-stream').HttpRequest;
+throw new Error('import files within @scrypted/sdk/lib directly to minimize plugin bundle size.');
