@@ -69,6 +69,8 @@ module.exports = {
 
     resolve: {
         alias: {
+            ByteBuffer: "bytebuffer",
+            Long: "long",
             dgram: path.resolve(__dirname, 'polyfill/dgram'),
             os: path.resolve(__dirname, 'polyfill/os'),
             net: path.resolve(__dirname, 'polyfill/net'),
