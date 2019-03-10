@@ -70,5 +70,5 @@ exports.debug = function(debugHost) {
 }
 
 exports.getDefaultWebpackConfig = function() {
-    return require(path.resolve(__dirname, 'webpack.config.js'));
+    return require(path.resolve(__dirname, '../webpack.config.js'));
 }

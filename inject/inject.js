@@ -15,23 +15,10 @@ Buffer.from = function (buf) {
 }
 
 Buffer.prototype.toString = function (encoding, start, end) {
-    if (encoding != 'hex') {
+    if (!encoding) {
         return bufferToString.apply(this, arguments);
     }
-
-    if (!start) {
-        start = 0;
-    }
-    if (!end) {
-        end = this.length;
-    }
-
-    var ret = '';
-    for (var i = start; i < end; i++) {
-        ret += ('00' + this[i].toString(16)).slice(-2);
-    }
-
-    return ret;
+    return __bufferToString(this, encoding, start ? start : 0, end ? end : this.byteLength);
 }
 
 Object.defineProperty(Buffer.prototype, "length", {
@@ -72,10 +59,10 @@ Buffer.prototype.write = function (string) {
     }
 
     if (!encoding || encoding == 'utf8') {
-        return bufferToString.apply(this, arguments);
+        return bufferWrite.apply(this, arguments);
     }
     if (encoding != 'hex') {
-        throw new Error('Buffer.toString("' + encoding + '") is not implemented in scrypted-deploy.')
+        throw new Error('Buffer.toString("' + encoding + '") is not implemented in @scrypted/sdk.')
     }
 
     if (!offset) {

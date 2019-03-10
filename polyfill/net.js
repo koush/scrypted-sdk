@@ -1,16 +1,15 @@
 import { inherits } from 'util';
-import { Duplex } from 'stream';
+import { DuplexSocket } from '../lib/stream-socket';
 
 Buffer.alloc = function (len) {
     return new Buffer(len);
 }
 
 function Socket() {
-    Duplex.call(this, {});
+    DuplexSocket.call(this, {});
     this.__type = "tcp";
-    this._pending = Buffer.alloc(0);
 }
-inherits(Socket, Duplex);
+inherits(Socket, DuplexSocket);
 
 Socket.prototype.connect = function () {
     var options;
@@ -43,48 +42,23 @@ Socket.prototype.connect = function () {
     }
 
     __tcpConnect(options, this.__type,
-        function (e, result, writer) {
+        function (e, socket, writer) {
             // socket
             if (e != null) {
                 this.emit('error', new Error(e.getMessage()));
                 return;
             }
-            this._socket = result;
-            this._socket.pause();
+            socket.pause();
+            this._socket = socket;
             this._writer = writer;
             this.once('_writable', function() {
                 this.emit('connect');
             }.bind(this));
         }.bind(this),
-        function () {
-            // close
-            this.emit('close')
-        }.bind(this),
-        function (e) {
-            // error
-            this.emit('error', new Error(e.getMessage()));
-        }.bind(this),
-        function (data) {
-            this._socket.pause();
-
-            data = new Buffer(data);
-            if (!this._reading) {
-                this._pending = Buffer.concat([this._pending, data]);
-                return;
-            }
-
-            var sub = data.slice(0, this._reading);
-            var remaining = data.slice(this._reading);
-            var more = this.push(sub);
-            this._pending = remaining;
-            if (more) {
-                this._socket.resume();
-            }
-        }.bind(this),
-        function (socket) {
-            // writable
-            this.emit('_writable');
-        }.bind(this));
+        this._close.bind(this),
+        this._error.bind(this),
+        this._data.bind(this),
+        this._writable.bind(this));
 }
 
 Socket.prototype._read = function (len) {
