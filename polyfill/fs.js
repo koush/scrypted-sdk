@@ -1,11 +1,11 @@
-import path from 'path';
+import {resolve} from 'path';
 
 var files = {};
 
 function readFileSync(file) {
-    file = path.resolve(file);
+    file = resolve(file);
     var data = files[file];
-    if (!data) {
+    if (data === undefined) {
         throw new Error("file not found. make sure it is packed using:\nfs.registerFile('/path/to/file', require('raw-loader!/path/to/file'))")
     }
     return data;

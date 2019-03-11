@@ -1,5 +1,5 @@
 import { inherits } from 'util';
-import { DuplexSocket } from '../lib/stream-socket';
+import { DuplexSocket } from '../lib/duplex-socket';
 
 Buffer.alloc = function (len) {
     return new Buffer(len);
