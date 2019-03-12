@@ -153,3 +153,7 @@ XMLHttpRequest.prototype.setRequestHeader = function (key, val) {
 Date.prototype.toUTCString = function () {
     return __toUTCString(this.getTime());
 }
+
+process.uptime = function() {
+    return __processUptime() / 1000;
+}

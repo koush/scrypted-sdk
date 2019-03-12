@@ -108,6 +108,7 @@ module.exports = {
             ByteBuffer: "bytebuffer",
             Long: "long",
             dgram: path.resolve(__dirname, 'polyfill/dgram'),
+            cluster: path.resolve(__dirname, 'polyfill/cluster'),
             os: path.resolve(__dirname, 'polyfill/os'),
             net: path.resolve(__dirname, 'polyfill/net'),
             tls: path.resolve(__dirname, 'polyfill/tls'),
