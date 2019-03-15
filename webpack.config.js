@@ -82,12 +82,17 @@ module.exports = {
 
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                options: {
+                    configFile : path.join(__dirname, 'tsconfig.json'),
+                },
+            
             }
 
         ]
     },
+
 
     externals: {
         "core-js/modules/es6.typed.uint8-array": "Uint8Array",
