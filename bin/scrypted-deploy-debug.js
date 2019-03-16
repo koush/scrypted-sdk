@@ -13,7 +13,7 @@ if (process.argv.length != 3) {
     return 1;
 }
 
-scrypted.deploy(process.argv[2])
+scrypted.deploy(process.argv[2], true)
 .then(() => {
     return scrypted.debug(process.argv[2]);
 })

@@ -8,7 +8,7 @@ const process = require('process');
 const path = require('path');
 const fs = require('fs');
 
-exports.deploy = function(debugHost) {
+exports.deploy = function(debugHost, noRebind) {
     return new Promise((resolve, reject) => {
         var out;
         if (process.env.NODE_ENV == 'production')
@@ -24,20 +24,43 @@ exports.deploy = function(debugHost) {
             return 3;
         }
     
-        const debugUrl = `https://${debugHost}:9443/web/component/script/deploy`
+        const deployUrl = `https://${debugHost}:9443/web/component/script/deploy?${noRebind ? 'no-rebind' : ''}`
+        const setupUrl = `https://${debugHost}:9443/web/component/script/setup?${noRebind ? 'no-rebind' : ''}`
     
         const fileContents = fs.readFileSync(main).toString();
         console.log(`deploying to ${debugHost}`);
     
-        axios.post(debugUrl, fileContents,
+        axios.post(deployUrl, fileContents,
             {
-                maxRedirects: 0,
                 timeout: 10000,
+                maxRedirects: 0,
+                validateStatus: function (status) {
+                    return status >= 200 && status < 300;
+                },
                 headers: {"Content-Type": "text/plain"}
             }
         )
-        .then(response => {
+        .then(() => {
             console.log(`deployed to ${debugHost}`);
+
+            var packageJson = path.resolve(process.cwd(), 'package.json');
+            packageJson = JSON.parse(fs.readFileSync(packageJson));
+
+            var { scrypted } = packageJson;
+            console.log(JSON.stringify(scrypted));
+
+            console.log(`configuring ${debugHost}`);
+            return axios.post(setupUrl, scrypted,
+            {
+                timeout: 10000,
+                maxRedirects: 0,
+                validateStatus: function (status) {
+                    return status >= 200 && status < 300;
+                },
+            });
+        })
+        .then((response) => {
+            console.log(`configured ${debugHost}`);
             resolve();
         })
         .catch((err) => {
@@ -55,8 +78,11 @@ exports.debug = function(debugHost) {
         console.log(`initiating debugger on ${debugHost}`);
     
         axios.post(debugUrl, {
-            maxRedirects: 0,
             timeout: 10000,
+            maxRedirects: 0,
+            validateStatus: function (status) {
+                return status >= 200 && status < 300; // default
+            },
         })
         .then(response => {
             console.log(`debugger ready on ${debugHost}`);
