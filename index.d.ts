@@ -268,11 +268,6 @@ export interface EventListener {
   onEvent(eventSource: ScryptedInterface, eventInterface: string, eventData: object): void;
 }
 /**
- * Returned when an event listener is attached to an EventEmitter. Call removeListener to unregister from events.
- */
-export interface EventListenerRegister {
-}
-/**
  * Logger is exposed via log.* to allow writing to the Scrypted log.
  */
 export interface Logger {
@@ -486,6 +481,11 @@ to that type of interface. OnOff would be boolean, while Brightness would be an 
   watch(event: string, callback: (eventSource: ScryptedInterface, eventInterface: string, eventData: object) => void): EventListenerRegister;
 }
 /**
+ * Returned when an event listener is attached to an EventEmitter. Call removeListener to unregister from events.
+ */
+export interface EventListenerRegister {
+}
+/**
  * All Scrypted devices implement ScryptedInterface, which contains id, name, and type.
  */
 export interface ScryptedInterface {
@@ -496,9 +496,9 @@ export interface ScryptedInterface {
 
 
 export interface ScryptedStatic {
-    deviceManager: DeviceManager,
-    scriptSettings: Settings,
-    log: Logger,
+    DeviceManager: DeviceManager,
+    ScriptSettings: Settings,
+    Logger: Logger,
 }
 
 declare const Scrypted: ScryptedStatic;
