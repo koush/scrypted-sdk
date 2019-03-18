@@ -157,3 +157,7 @@ Date.prototype.toUTCString = function () {
 process.uptime = function() {
     return __processUptime() / 1000;
 }
+
+global.onunhandledrejection = function(e) {
+    throw e.reason;
+}

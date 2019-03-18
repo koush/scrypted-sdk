@@ -496,9 +496,9 @@ export interface ScryptedInterface {
 
 
 export interface ScryptedStatic {
-    DeviceManager: DeviceManager,
-    ScriptSettings: Settings,
-    Logger: Logger,
+    deviceManager: DeviceManager,
+    scriptSettings: Settings,
+    log: Logger,
 }
 
 declare const Scrypted: ScryptedStatic;
