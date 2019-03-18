@@ -409,6 +409,8 @@ export enum ScryptedThingType {
   Event = "Event",
   Entry = "Entry",
   DeviceProvider = "DeviceProvider",
+  DataSource = "DataSource",
+  API = "API",
   Unknown = "Unknown",
 }
 /**
@@ -496,9 +498,9 @@ export interface ScryptedInterface {
 
 
 export interface ScryptedStatic {
-    deviceManager: DeviceManager,
-    scriptSettings: Settings,
-    log: Logger,
+    DeviceManager: DeviceManager,
+    ScriptSettings: Settings,
+    Logger: Logger,
 }
 
 declare const Scrypted: ScryptedStatic;

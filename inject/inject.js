@@ -89,7 +89,7 @@ global.location = {
 }
 
 global.XMLHttpRequest = function () {
-    this.readyState = 4;
+    this.readyState = 0;
 };
 
 Object.defineProperty(XMLHttpRequest.prototype, "responseType", {
@@ -97,20 +97,23 @@ Object.defineProperty(XMLHttpRequest.prototype, "responseType", {
         return this.__responseType || 'text';
     },
     set: function (val) {
-        if (val == 'text' || val == 'arraybuffer' || val == 'json')
+        if (val == 'text' || val == 'arraybuffer' || val == 'json' || val == 'moz-chunked-arraybuffer')
             this.__responseType = val;
     }
 });
 
 XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+    this.readyState = 1;
     this.__request = __createHttpRequest(method, url);
+    this._notifyReadyStateChange();
 };
 
 XMLHttpRequest.prototype.send = function (requestData) {
     if (requestData != null)
         this.__request.setBody(__newStringBody(new Buffer(requestData).toString()));
 
-    __executeHttpRequest(this.__request, function (e, result, code, message, headers) {
+    var chunked = this.responseType == 'moz-chunked-arraybuffer';
+    (chunked ? __executeChunkedHttpRequest : __executeHttpRequest)(this.__request, function (e, result, code, message, headers, responseURL) {
         if (e != null) {
             if (this.onerror)
                 this.onerror(new Error(e));
@@ -119,8 +122,10 @@ XMLHttpRequest.prototype.send = function (requestData) {
 
         this.status = code;
         this.statusText = message;
+        this.responseURL = responseURL;
 
         this.responseHeaders = headers;
+        this.readyState = 4;
         if (this.responseType == 'json') {
             try {
                 this.response = JSON.parse(result);
@@ -133,13 +138,23 @@ XMLHttpRequest.prototype.send = function (requestData) {
         else if (this.responseType == 'arraybuffer') {
             this.response = new Buffer(result);
         }
+        else if (chunked) {
+            this.response = new Buffer(result);
+            this.readyState = 3;
+        }
         else {
             this.responseText = result;
         }
 
-        this.onreadystatechange();
+        this._notifyReadyStateChange();
     }.bind(this));
 };
+
+XMLHttpRequest.prototype._notifyReadyStateChange = function () {
+    if (this.onreadystatechange) {
+        this.onreadystatechange();
+    }
+}
 
 XMLHttpRequest.prototype.getAllResponseHeaders = function () {
     return this.responseHeaders;
