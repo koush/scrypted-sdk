@@ -255,6 +255,12 @@ export interface MediaPlayerOptions {
 }
 export interface FaceDetector {
 }
+export interface AudioSensor {
+}
+export interface MotionSensor {
+}
+export interface OccupancySensor {
+}
 /**
  * Online denotes whether the device is online or unresponsive. It may be unresponsive due to being unplugged, network error, etc.
  */
@@ -496,11 +502,17 @@ export interface ScryptedInterface {
   type(): ScryptedThingType;
 }
 
-
 export interface ScryptedStatic {
     deviceManager: DeviceManager,
     scriptSettings: Settings,
     log: Logger,
+    /**
+     * Create a MediaObject. The mime type needs to be provided up front, but the data can be a string, Buffer, or a Promise
+     * to a string or Buffer.
+     * @param mimeType The mime type of the media. May be a wildcard, such as image/*.
+     * @param data  The media data. Currently A uri string or a Buffer.
+     */
+    createMediaObject(mimeType: string, data: string|Buffer|Promise<string|Buffer>): MediaObject;
 }
 
 declare const Scrypted: ScryptedStatic;

@@ -1,7 +1,8 @@
 var sdk = {
-    log: log,
-    deviceManager: deviceManager,
-    scriptSettings: scriptSettings,
+    log,
+    deviceManager,
+    scriptSettings,
+    createMediaObject: __createMediaObject,
 }
 
 module.exports = sdk;
