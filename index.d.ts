@@ -171,6 +171,9 @@ export interface PasswordControl {
   getPasswords(): string[];
   removePassword(password: string): void;
 }
+export interface Camera {
+  takePicture(): MediaObject;
+}
 export interface CameraStream extends ReferenceId {
   createVideoCapturer(): MediaObject;
 }
