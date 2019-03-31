@@ -139,8 +139,10 @@ XMLHttpRequest.prototype.send = function (requestData) {
             this.response = new Buffer(result);
         }
         else if (chunked) {
-            this.response = new Buffer(result);
-            this.readyState = 3;
+            if (result) {
+                this.response = new Buffer(result);
+                this.readyState = 3;
+            }
         }
         else {
             this.responseText = result;
