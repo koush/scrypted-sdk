@@ -21,6 +21,7 @@ var mediaManagerProxy = new Proxy(function(){}, {
 })
 var sdk = {
     log,
+    systemManager,
     deviceManager,
     scriptSettings,
     mediaManager: mediaManagerProxy,
