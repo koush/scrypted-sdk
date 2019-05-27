@@ -20,12 +20,14 @@ export interface DeviceState {
    */
   temperatureUnit?: TemperatureUnit,
   humidity?: number,
-  locked?: boolean,
+  lockState?: LockState,
   passwords?: string[],
   entryOpen?: boolean,
   batteryLevel?: number,
   online?: boolean,
   updateAvailable?: boolean,
+  fromMimeType?: string,
+  toMimeType?: string,
   binaryState?: boolean,
   intrusionDetected?: boolean,
   motionDetected?: boolean,
@@ -37,15 +39,15 @@ export interface DeviceState {
  * All devices in Scrypted implement ScryptedDevice, which contains the id, name, and type. Add listeners to subscribe to events from that device.
  */
 export interface ScryptedDevice {
-  events(): string[];
-  id(): string;
-  interfaces(): string[];
   /**
    * Subscribe to events from a specific interface on a device, such as 'OnOff' or 'Brightness'.
    */
   listen(event: string|EventListenerOptions, callback: (eventSource: ScryptedDevice, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
-  name(): string;
-  type(): ScryptedDeviceType;
+  events?: string[],
+  id?: string,
+  interfaces?: string[],
+  name?: string,
+  type?: ScryptedDeviceType,
 }
 export interface EventListenerOptions {
   /**
@@ -100,6 +102,7 @@ export enum ScryptedDeviceType {
   Speaker = "Speaker",
   Event = "Event",
   Entry = "Entry",
+  Garage = "Garage",
   DeviceProvider = "DeviceProvider",
   DataSource = "DataSource",
   API = "API",
@@ -267,7 +270,12 @@ export interface VideoCamera {
 export interface Lock {
   lock(): void;
   unlock(): void;
-  locked?: boolean,
+  lockState?: LockState,
+}
+export enum LockState {
+  Locked = "Locked",
+  Unlocked = "Unlocked",
+  Jammed = "Jammed",
 }
 /**
  * PasswordControl represents devices that authorize users via a passcode or pin code.
@@ -311,9 +319,6 @@ export interface DeviceProvider {
    */
   getDevice(id: string): object;
 }
-/**
- * Event data from the Scheduler component.
- */
 export interface Alarm {
   getClockType(): ClockType;
   getHour(): number;
@@ -321,13 +326,13 @@ export interface Alarm {
   isEnabled(day: number): boolean;
 }
 export enum ClockType {
-  _AM = "_AM",
-  _PM = "_PM",
-  _24HourClock = "_24HourClock",
-  _BeforeSunrise = "_BeforeSunrise",
-  _AfterSunrise = "_AfterSunrise",
-  _BeforeSunset = "_BeforeSunset",
-  _AfterSunset = "_AfterSunset",
+  AM = "AM",
+  PM = "PM",
+  TwentyFourHourClock = "TwentyFourHourClock",
+  BeforeSunrise = "BeforeSunrise",
+  AfterSunrise = "AfterSunrise",
+  BeforeSunset = "BeforeSunset",
+  AfterSunset = "AfterSunset",
 }
 /**
  * Battery retrieves the battery level of battery powered devices.
@@ -384,6 +389,14 @@ export interface SoftwareUpdate {
   checkForUpdate(): void;
   installUpdate(): void;
   updateAvailable?: boolean,
+}
+/**
+ * Add a converter to be used by Scrypted to convert buffers from one mime type to another mime type.
+ */
+export interface BufferConverter {
+  convert(buffer: Buffer, fromMimeType: string): Promise<Buffer>;
+  fromMimeType?: string,
+  toMimeType?: string,
 }
 export interface BinarySensor {
   binaryState?: boolean,
@@ -567,7 +580,7 @@ export interface SystemManager {
   /**
    * Get the current state of a device.
    */
-  getDeviceState(arg0: string): object;
+  getDeviceState(id: string): object;
   /**
    * Get the current state of every device.
    */

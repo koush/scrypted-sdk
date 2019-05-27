@@ -10,7 +10,10 @@ Buffer.alloc = function (len) {
 }
 Buffer.allocUnsafe = Buffer.alloc;
 
-Buffer.from = function (buf) {
+Buffer.from = function (buf, encoding) {
+    if (typeof buf == 'string' && encoding) {
+        return __stringToBuffer(buf, encoding);
+    }
     return new Buffer(buf);
 }
 
