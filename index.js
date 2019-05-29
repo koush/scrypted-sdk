@@ -19,13 +19,15 @@ var mediaManagerProxy = new Proxy(function(){}, {
     },
     apply: mediaManagerApply,
 })
-var sdk = {
+
+var sdk = require('./index.generated.js');
+sdk = Object.assign(sdk, {
     log,
     systemManager,
     deviceManager,
     scriptSettings,
     mediaManager: mediaManagerProxy,
-}
+});
 
 module.exports = sdk;
 module.exports.default = sdk;

@@ -3,37 +3,37 @@
  * DeviceState is returned by DeviceManager.getDeviceState, and allows getting/setting of a device provided by a DeviceProvider.
  */
 export interface DeviceState {
-  on?: boolean,
-  brightness?: number,
-  colorTemperature?: number,
-  rgb?: ColorRgb,
-  hsv?: ColorHsv,
-  paused?: boolean,
-  running?: boolean,
-  docked?: boolean,
+  on?: boolean;
+  brightness?: number;
+  colorTemperature?: number;
+  rgb?: ColorRgb;
+  hsv?: ColorHsv;
+  paused?: boolean;
+  running?: boolean;
+  docked?: boolean;
   /**
    * Get the ambient temperature in Celsius.
    */
-  temperature?: number,
+  temperature?: number;
   /**
    * Get the user facing unit of measurement for this thermometer. Note that while this may be Fahrenheit, getTemperatureAmbient will return the temperature in Celsius.
    */
-  temperatureUnit?: TemperatureUnit,
-  humidity?: number,
-  lockState?: LockState,
-  passwords?: string[],
-  entryOpen?: boolean,
-  batteryLevel?: number,
-  online?: boolean,
-  updateAvailable?: boolean,
-  fromMimeType?: string,
-  toMimeType?: string,
-  binaryState?: boolean,
-  intrusionDetected?: boolean,
-  motionDetected?: boolean,
-  flooded?: boolean,
-  ultraviolet?: number,
-  luminance?: number,
+  temperatureUnit?: TemperatureUnit;
+  humidity?: number;
+  lockState?: LockState;
+  passwords?: string[];
+  entryOpen?: boolean;
+  batteryLevel?: number;
+  online?: boolean;
+  updateAvailable?: boolean;
+  fromMimeType?: string;
+  toMimeType?: string;
+  binaryState?: boolean;
+  intrusionDetected?: boolean;
+  motionDetected?: boolean;
+  flooded?: boolean;
+  ultraviolet?: number;
+  luminance?: number;
 }
 /**
  * All devices in Scrypted implement ScryptedDevice, which contains the id, name, and type. Add listeners to subscribe to events from that device.
@@ -43,25 +43,25 @@ export interface ScryptedDevice {
    * Subscribe to events from a specific interface on a device, such as 'OnOff' or 'Brightness'.
    */
   listen(event: string|EventListenerOptions, callback: (eventSource: ScryptedDevice, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
-  events?: string[],
-  id?: string,
-  interfaces?: string[],
-  name?: string,
-  type?: ScryptedDeviceType,
+  events?: string[];
+  id?: string;
+  interfaces?: string[];
+  name?: string;
+  type?: ScryptedDeviceType;
 }
 export interface EventListenerOptions {
   /**
    * This EventListener will denoise events, and will not be called unless the state changes.
    */
-  denoise?: boolean,
+  denoise?: boolean;
   /**
    * The EventListener will subscribe to this event interface.
    */
-  event?: string,
+  event?: string;
   /**
    * This EventListener will passively watch for events, and not initiate polling.
    */
-  watch?: boolean,
+  watch?: boolean;
 }
 /**
  * Returned when an event listener is attached to an EventEmitter. Call removeListener to unregister from events.
@@ -77,10 +77,10 @@ export interface EventListener {
   onEvent(eventSource: ScryptedDevice, eventDetails: EventDetails, eventData: object): void;
 }
 export interface EventDetails {
-  changed?: boolean,
-  eventInterface?: string,
-  eventTime?: number,
-  property?: string,
+  changed?: boolean;
+  eventInterface?: string;
+  eventTime?: number;
+  property?: string;
 }
 export enum ScryptedDeviceType {
   Builtin = "Builtin",
@@ -114,14 +114,14 @@ export enum ScryptedDeviceType {
 export interface OnOff {
   turnOff(): void;
   turnOn(): void;
-  on?: boolean,
+  on?: boolean;
 }
 /**
  * Brightness is a lighting device that can be dimmed/lit between 0 to 100.
  */
 export interface Brightness {
   setBrightness(brightness: number): void;
-  brightness?: number,
+  brightness?: number;
 }
 /**
  * ColorSettingTemperature sets the color temperature of a light in Kelvin.
@@ -130,14 +130,14 @@ export interface ColorSettingTemperature {
   getTemperatureMaxK(): number;
   getTemperatureMinK(): number;
   setTemperature(kelvin: number): void;
-  colorTemperature?: number,
+  colorTemperature?: number;
 }
 /**
  * ColorSettingRgb sets the color of a colored light using the RGB representation.
  */
 export interface ColorSettingRgb {
   setRgb(r: number, g: number, b: number): void;
-  rgb?: ColorRgb,
+  rgb?: ColorRgb;
 }
 /**
  * Represents an RGB color with component values between 0 and 255.
@@ -145,16 +145,16 @@ export interface ColorSettingRgb {
 export interface ColorRgb {
   equals(arg0: object): boolean;
   toString(): string;
-  b?: number,
-  g?: number,
-  r?: number,
+  b?: number;
+  g?: number;
+  r?: number;
 }
 /**
  * ColorSettingHsv sets the color of a colored light using the HSV representation.
  */
 export interface ColorSettingHsv {
   setHsv(hue: number, saturation: number, value: number): void;
-  hsv?: ColorHsv,
+  hsv?: ColorHsv;
 }
 /**
  * Represents an HSV color value component.
@@ -165,15 +165,15 @@ export interface ColorHsv {
   /**
    * Hue. 0 to 360.
    */
-  h?: number,
+  h?: number;
   /**
    * Saturation. 0 to 1.
    */
-  s?: number,
+  s?: number;
   /**
    * Value. 0 to 1.
    */
-  v?: number,
+  v?: number;
 }
 /**
  * Notifier can be any endpoint that can receive messages, such as speakers, phone numbers, messaging clients, etc. The messages may optionally contain media.
@@ -200,15 +200,15 @@ export interface StartStop {
   resume(): void;
   start(): void;
   stop(): void;
-  paused?: boolean,
-  running?: boolean,
+  paused?: boolean;
+  running?: boolean;
 }
 /**
  * Dock instructs devices that have a base station or charger, to return to their home.
  */
 export interface Dock {
   dock(): void;
-  docked?: boolean,
+  docked?: boolean;
 }
 /**
  * TemperatureSetting represents a thermostat device.
@@ -227,18 +227,18 @@ export interface Thermometer {
   /**
    * Get the ambient temperature in Celsius.
    */
-  temperature?: number,
+  temperature?: number;
   /**
    * Get the user facing unit of measurement for this thermometer. Note that while this may be Fahrenheit, getTemperatureAmbient will return the temperature in Celsius.
    */
-  temperatureUnit?: TemperatureUnit,
+  temperatureUnit?: TemperatureUnit;
 }
 export enum TemperatureUnit {
   C = "C",
   F = "F",
 }
 export interface HumiditySensor {
-  humidity?: number,
+  humidity?: number;
 }
 export enum ThermostatMode {
   Off = "Off",
@@ -270,7 +270,7 @@ export interface VideoCamera {
 export interface Lock {
   lock(): void;
   unlock(): void;
-  lockState?: LockState,
+  lockState?: LockState;
 }
 export enum LockState {
   Locked = "Locked",
@@ -280,10 +280,16 @@ export enum LockState {
 /**
  * PasswordControl represents devices that authorize users via a passcode or pin code.
  */
-export interface PasswordControl {
+export interface PasswordControl extends Authenticator {
   addPassword(password: string): void;
   removePassword(password: string): void;
-  passwords?: string[],
+  passwords?: string[];
+}
+/**
+ * Authenticator can be used to require a password before allowing interaction with a security device.
+ */
+export interface Authenticator {
+  checkPassword(password: string): boolean;
 }
 /**
  * Scenes control multiple different devices into a given state.
@@ -304,7 +310,7 @@ export interface Entry extends EntrySensor {
   openEntry(): void;
 }
 export interface EntrySensor {
-  entryOpen?: boolean,
+  entryOpen?: boolean;
 }
 /**
  * DeviceProvider acts as a controller/hub and exposes multiple devices to Scrypted Device Manager.
@@ -338,7 +344,7 @@ export enum ClockType {
  * Battery retrieves the battery level of battery powered devices.
  */
 export interface Battery {
-  batteryLevel?: number,
+  batteryLevel?: number;
 }
 /**
  * Refresh indicates that this device has properties that are not automatically updated, and must be periodically refreshed via polling. Device implementations should never implement their own underlying polling algorithm, and instead implement Refresh to allow Scrypted to manage polling intelligently.
@@ -363,14 +369,14 @@ export interface MediaPlayer {
   stop(): void;
 }
 export interface MediaPlayerOptions {
-  autoplay?: boolean,
-  mimeType?: string,
+  autoplay?: boolean;
+  mimeType?: string;
 }
 /**
  * Online denotes whether the device is online or unresponsive. It may be unresponsive due to being unplugged, network error, etc.
  */
 export interface Online {
-  online?: boolean,
+  online?: boolean;
 }
 export interface Program {
   /**
@@ -388,37 +394,37 @@ export interface Program {
 export interface SoftwareUpdate {
   checkForUpdate(): void;
   installUpdate(): void;
-  updateAvailable?: boolean,
+  updateAvailable?: boolean;
 }
 /**
  * Add a converter to be used by Scrypted to convert buffers from one mime type to another mime type.
  */
 export interface BufferConverter {
   convert(buffer: Buffer, fromMimeType: string): Promise<Buffer>;
-  fromMimeType?: string,
-  toMimeType?: string,
+  fromMimeType?: string;
+  toMimeType?: string;
 }
 export interface BinarySensor {
-  binaryState?: boolean,
+  binaryState?: boolean;
 }
 export interface IntrusionSensor {
-  intrusionDetected?: boolean,
+  intrusionDetected?: boolean;
 }
 export interface AudioSensor {
 }
 export interface MotionSensor {
-  motionDetected?: boolean,
+  motionDetected?: boolean;
 }
 export interface OccupancySensor {
 }
 export interface FloodSensor {
-  flooded?: boolean,
+  flooded?: boolean;
 }
 export interface UltravioletSensor {
-  ultraviolet?: number,
+  ultraviolet?: number;
 }
 export interface LuminanceSensor {
-  luminance?: number,
+  luminance?: number;
 }
 /**
  * Logger is exposed via log.* to allow writing to the Scrypted log.
@@ -548,22 +554,21 @@ export interface DeviceManager {
  * Device objects are created by DeviceProviders when new devices are discover and synced to Scrypted via the DeviceManager.
  */
 export interface Device {
-  events?: string[],
-  interfaces?: string[],
-  model?: string,
-  name?: string,
+  interfaces?: string[];
+  model?: string;
+  name?: string;
   /**
    * The native id that is used by the DeviceProvider used to internally identify provided devices.
    */
-  nativeId?: string,
-  room?: string,
-  type?: ScryptedDeviceType,
+  nativeId?: string;
+  room?: string;
+  type?: ScryptedDeviceType;
 }
 /**
  * DeviceManifest is passed to DeviceManager.onDevicesChanged to sync a full list of devices from the controller/hub (Hue, SmartThings, etc)
  */
 export interface DeviceManifest {
-  devices?: Device[],
+  devices?: Device[];
 }
 /**
  * SystemManager is used by scripts to query device state and access devices.
@@ -600,11 +605,11 @@ export interface HttpRequestHandler {
   onRequest(request: HttpRequest, response: HttpResponse): void;
 }
 export interface HttpRequest {
-  body?: string,
-  headers?: object,
-  method?: string,
-  rootPath?: string,
-  url?: string,
+  body?: string;
+  headers?: object;
+  method?: string;
+  rootPath?: string;
+  url?: string;
 }
 /**
  * Response object provided by the HttpRequestHandler.
@@ -616,14 +621,49 @@ export interface HttpResponse {
   send(body: Buffer): void;
 }
 export interface HttpResponseOptions {
-  asContent?: boolean,
-  code?: number,
-  headers?: object,
+  asContent?: boolean;
+  code?: number;
+  headers?: object;
+}
+
+export class ScryptedDeviceBase implements DeviceState {
+  on?: boolean;
+  brightness?: number;
+  colorTemperature?: number;
+  rgb?: ColorRgb;
+  hsv?: ColorHsv;
+  paused?: boolean;
+  running?: boolean;
+  docked?: boolean;
+  /**
+   * Get the ambient temperature in Celsius.
+   */
+  temperature?: number;
+  /**
+   * Get the user facing unit of measurement for this thermometer. Note that while this may be Fahrenheit, getTemperatureAmbient will return the temperature in Celsius.
+   */
+  temperatureUnit?: TemperatureUnit;
+  humidity?: number;
+  lockState?: LockState;
+  passwords?: string[];
+  entryOpen?: boolean;
+  batteryLevel?: number;
+  online?: boolean;
+  updateAvailable?: boolean;
+  fromMimeType?: string;
+  toMimeType?: string;
+  binaryState?: boolean;
+  intrusionDetected?: boolean;
+  motionDetected?: boolean;
+  flooded?: boolean;
+  ultraviolet?: number;
+  luminance?: number;
 }
 
 export interface ScryptedStatic {
     scriptSettings: Settings,
     log: Logger,
+    ScryptedDeviceBase,
     systemManager: SystemManager,
     deviceManager: DeviceManager,
     mediaManager: MediaManager,
