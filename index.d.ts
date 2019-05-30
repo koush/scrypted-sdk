@@ -625,6 +625,67 @@ export interface HttpResponseOptions {
   code?: number;
   headers?: object;
 }
+export interface ZwaveManager {
+  getValue(valueId: ZwaveValueId): string;
+  getValueHelp(valueId: ZwaveValueId): string;
+  getValueLabel(valueId: ZwaveValueId): string;
+  getValueListItems(valueId: ZwaveValueId): string[];
+  getValueListValues(valueId: ZwaveValueId): number[];
+  getValueUnit(valueId: ZwaveValueId): string;
+  refreshValue(valueId: ZwaveValueId): void;
+  setValue(valueId: ZwaveValueId, value: string): void;
+}
+export interface ZwaveValueId {
+  commandClass?: number;
+  genre?: number;
+  homeId?: number;
+  index?: number;
+  instance?: number;
+  nodeId?: number;
+  type?: number;
+}
+export interface ZwaveNotification {
+  byteData?: number;
+  event?: number;
+  type?: ZwaveNotificationType;
+  valueId?: ZwaveValueId;
+}
+export enum ZwaveNotificationType {
+  Type_ValueAdded = "Type_ValueAdded",
+  Type_ValueRemoved = "Type_ValueRemoved",
+  Type_ValueChanged = "Type_ValueChanged",
+  Type_ValueRefreshed = "Type_ValueRefreshed",
+  Type_Group = "Type_Group",
+  Type_NodeNew = "Type_NodeNew",
+  Type_NodeAdded = "Type_NodeAdded",
+  Type_NodeRemoved = "Type_NodeRemoved",
+  Type_NodeProtocolInfo = "Type_NodeProtocolInfo",
+  Type_NodeNaming = "Type_NodeNaming",
+  Type_NodeEvent = "Type_NodeEvent",
+  Type_PollingDisabled = "Type_PollingDisabled",
+  Type_PollingEnabled = "Type_PollingEnabled",
+  Type_SceneEvent = "Type_SceneEvent",
+  Type_CreateButton = "Type_CreateButton",
+  Type_DeleteButton = "Type_DeleteButton",
+  Type_ButtonOn = "Type_ButtonOn",
+  Type_ButtonOff = "Type_ButtonOff",
+  Type_DriverReady = "Type_DriverReady",
+  Type_DriverFailed = "Type_DriverFailed",
+  Type_DriverReset = "Type_DriverReset",
+  Type_EssentialNodeQueriesComplete = "Type_EssentialNodeQueriesComplete",
+  Type_NodeQueriesComplete = "Type_NodeQueriesComplete",
+  Type_AwakeNodesQueried = "Type_AwakeNodesQueried",
+  Type_AllNodesQueriedSomeDead = "Type_AllNodesQueriedSomeDead",
+  Type_AllNodesQueried = "Type_AllNodesQueried",
+  Type_Notification = "Type_Notification",
+  Type_DriverRemoved = "Type_DriverRemoved",
+  Type_ControllerCommand = "Type_ControllerCommand",
+  Type_NodeReset = "Type_NodeReset",
+  Type_UserAlerts = "Type_UserAlerts",
+  Type_ManufacturerSpecificDBReady = "Type_ManufacturerSpecificDBReady",
+}
+export interface ZwaveNotifications {
+}
 
 export class ScryptedDeviceBase implements DeviceState {
   on?: boolean;
@@ -660,6 +721,9 @@ export class ScryptedDeviceBase implements DeviceState {
   luminance?: number;
 }
 
+export interface ZwaveManagerDevice extends ZwaveManager, ScryptedDevice {
+}
+
 export interface ScryptedStatic {
     scriptSettings: Settings,
     log: Logger,
@@ -667,6 +731,7 @@ export interface ScryptedStatic {
     systemManager: SystemManager,
     deviceManager: DeviceManager,
     mediaManager: MediaManager,
+    zwaveManager: ZwaveManagerDevice,
 }
 
 

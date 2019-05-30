@@ -60,39 +60,43 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?js$/,
+                test: /\.(ts|js)x?$/,
                 // unsure if this is correct... need to transpile node modules at times.
                 // exclude: /(node_modules|bower_components)/,
                 exclude: /(core-js)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        "plugins": ["@babel/plugin-transform-modules-commonjs"],
+                        "plugins": [
+                            "@babel/plugin-transform-typescript",
+                            "@babel/plugin-proposal-class-properties",
+                            "@babel/plugin-transform-modules-commonjs"
+                        ],
                         "presets": [
                             [
                                 "@babel/preset-env",
                                 {
                                     "useBuiltIns": "usage",
                                 },
+                                "@babel/typescript",
                             ],
                         ]
                     }
                 }
             },
 
-            {
-                test: /\.tsx?$/,
-                loader: 'ts-loader',
-                exclude: /node_modules/,
-                options: {
-                    configFile : path.join(__dirname, 'tsconfig.json'),
-                },
+            // {
+            //     test: /\.tsx?$/,
+            //     loader: 'ts-loader',
+            //     exclude: /node_modules/,
+            //     options: {
+            //         configFile : path.join(__dirname, 'tsconfig.json'),
+            //     },
             
-            }
+            // }
 
         ]
     },
-
 
     externals: {
         "core-js/modules/es6.typed.uint8-array": "Uint8Array",
@@ -122,7 +126,9 @@ module.exports = {
             buffer: path.resolve(__dirname, 'polyfill/buffer'),
             buffertools: path.resolve(__dirname, 'node_modules/browserify-buffertools'),
             'safe-buffer': path.resolve(__dirname, 'polyfill/safe-buffer'),
-        }
+        },
+
+        extensions: ['.tsx', '.ts', '.js']
     },
 
     stats: {

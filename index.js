@@ -27,6 +27,7 @@ sdk = Object.assign(sdk, {
     deviceManager,
     scriptSettings,
     mediaManager: mediaManagerProxy,
+    zwaveManager,
 });
 
 module.exports = sdk;
