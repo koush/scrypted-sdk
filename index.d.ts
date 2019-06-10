@@ -696,7 +696,7 @@ export class ScryptedDeviceBase implements DeviceState {
   _nativeId: string;
   log: Logger;
   storage: Storage;
-  constructor(nativeId: string);
+  constructor(nativeId?: string);
   on?: boolean;
   brightness?: number;
   colorTemperature?: number;
