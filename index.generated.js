@@ -3,6 +3,20 @@ class ScryptedDeviceBase {
         this._nativeId = nativeId;
     }
 
+    get storage() {
+        if (!this._storage) {
+            this._storage = deviceManager.getDeviceStorage(this._nativeId);
+        }
+        return this._storage;
+    }
+
+    get log() {
+        if (!this._log) {
+            this._log = deviceManager.getDeviceLogger(this._nativeId);
+        }
+        return this._log;
+    }
+
     _lazyLoadDeviceState() {
         if (!this._deviceState) {
             if (this._nativeId) {

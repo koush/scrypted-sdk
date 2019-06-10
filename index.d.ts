@@ -21,7 +21,7 @@ export interface DeviceState {
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
   lockState?: LockState;
-  passwords?: string[];
+  passwords?: StringSet;
   entryOpen?: boolean;
   batteryLevel?: number;
   online?: boolean;
@@ -143,8 +143,6 @@ export interface ColorSettingRgb {
  * Represents an RGB color with component values between 0 and 255.
  */
 export interface ColorRgb {
-  equals(arg0: object): boolean;
-  toString(): string;
   b?: number;
   g?: number;
   r?: number;
@@ -160,8 +158,6 @@ export interface ColorSettingHsv {
  * Represents an HSV color value component.
  */
 export interface ColorHsv {
-  equals(arg0: object): boolean;
-  toString(): string;
   /**
    * Hue. 0 to 360.
    */
@@ -280,10 +276,10 @@ export enum LockState {
 /**
  * PasswordControl represents devices that authorize users via a passcode or pin code.
  */
-export interface PasswordControl extends Authenticator {
+export interface PasswordStore extends Authenticator {
   addPassword(password: string): void;
   removePassword(password: string): void;
-  passwords?: string[];
+  passwords?: StringSet;
 }
 /**
  * Authenticator can be used to require a password before allowing interaction with a security device.
@@ -323,7 +319,7 @@ export interface DeviceProvider {
   /**
    * Get an instance of a previously discovered device that was reported to the device manager.
    */
-  getDevice(id: string): object;
+  getDevice(nativeId: string): object;
 }
 export interface Alarm {
   getClockType(): ClockType;
@@ -480,14 +476,13 @@ export interface MessagingEndpoint {
  */
 export interface Settings {
   getBoolean(key: string): boolean;
-  getBoolean(key: string, defaultValue: boolean): boolean;
-  getConfigurationValueList(key: string): string[];
   getDouble(key: string): number;
   getFloat(key: string): number;
   getInt(key: string): number;
   getKeyDescription(key: string): string;
-  getKeys(): string[];
+  getKeys(): StringSet;
   getString(key: string): string;
+  getValidValues(key: string): StringSet;
   putBoolean(key: string, value: boolean): void;
   putDouble(key: string, value: number): void;
   putFloat(key: string, value: number): void;
@@ -526,6 +521,10 @@ export interface MediaManager {
  */
 export interface DeviceManager {
   /**
+   * Get the logger for a device given a native id.
+   */
+  getDeviceLogger(nativeId: string): Logger;
+  /**
    * Get the device state maintained by Scrypted. Setting properties on this state will update the state in Scrypted.
    */
   getDeviceState(): DeviceState;
@@ -533,6 +532,8 @@ export interface DeviceManager {
    * Get the device state maintained by Scrypted. Setting properties on this state will update the state in Scrypted.
    */
   getDeviceState(nativeId: string): DeviceState;
+  getDeviceStorage(): Storage;
+  getDeviceStorage(nativeId: string): Storage;
   /**
    * onDeviceDiscovered is used to report new devices that are trickle discovered, one by one, such as via a network broadcast.
    */
@@ -626,6 +627,9 @@ export interface HttpResponseOptions {
   headers?: object;
 }
 export interface ZwaveManager {
+  getNodeManufacturerName(homeId: number, nodeId: number): string;
+  getNodeName(homeId: number, nodeId: number): string;
+  getNodeProductName(homeId: number, nodeId: number): string;
   getValue(valueId: ZwaveValueId): string;
   getValueHelp(valueId: ZwaveValueId): string;
   getValueLabel(valueId: ZwaveValueId): string;
@@ -634,6 +638,7 @@ export interface ZwaveManager {
   getValueUnit(valueId: ZwaveValueId): string;
   refreshValue(valueId: ZwaveValueId): void;
   setValue(valueId: ZwaveValueId, value: string): void;
+  setValueRaw(valueId: ZwaveValueId, value: Buffer): void;
 }
 export interface ZwaveValueId {
   commandClass?: number;
@@ -688,6 +693,10 @@ export interface ZwaveNotifications {
 }
 
 export class ScryptedDeviceBase implements DeviceState {
+  _nativeId: string;
+  log: Logger;
+  storage: Storage;
+  constructor(nativeId: string);
   on?: boolean;
   brightness?: number;
   colorTemperature?: number;
@@ -706,7 +715,7 @@ export class ScryptedDeviceBase implements DeviceState {
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
   lockState?: LockState;
-  passwords?: string[];
+  passwords?: StringSet;
   entryOpen?: boolean;
   batteryLevel?: number;
   online?: boolean;
