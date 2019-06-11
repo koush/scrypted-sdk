@@ -21,7 +21,7 @@ export interface DeviceState {
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
   lockState?: LockState;
-  passwords?: StringSet;
+  passwords?: string[];
   entryOpen?: boolean;
   batteryLevel?: number;
   online?: boolean;
@@ -185,7 +185,7 @@ Passing null uses the native type of the MediaObject. If that is not supported b
  * MediaObject is an intermediate object within Scrypted to represent all media objects. Plugins should use the MediaConverter to convert the Scrypted MediaObject into a desired type, whether it is a externally accessible URL, a Buffer, etc.
  */
 export interface MediaObject {
-  getMimeType(): string;
+  mimeType?: string;
 }
 /**
  * StartStop represents a device that can be started, stopped, and possibly paused and resumed. Typically vacuum cleaners or washers.
@@ -279,7 +279,7 @@ export enum LockState {
 export interface PasswordStore extends Authenticator {
   addPassword(password: string): void;
   removePassword(password: string): void;
-  passwords?: StringSet;
+  passwords?: string[];
 }
 /**
  * Authenticator can be used to require a password before allowing interaction with a security device.
@@ -382,7 +382,7 @@ export interface Program {
   /**
    * Asynchronously run a script given the provided arguments.
    */
-  runAsync(args: object[]): object;
+  runAsync(args: object[]): Future;
 }
 /**
  * SoftwareUpdate provides a way to check for updates and install them. This may be a Scrypted Plugin or device firmware.
@@ -480,9 +480,9 @@ export interface Settings {
   getFloat(key: string): number;
   getInt(key: string): number;
   getKeyDescription(key: string): string;
-  getKeys(): StringSet;
+  getKeys(): string[];
   getString(key: string): string;
-  getValidValues(key: string): StringSet;
+  getValidValues(key: string): string[];
   putBoolean(key: string, value: boolean): void;
   putDouble(key: string, value: number): void;
   putFloat(key: string, value: number): void;
@@ -715,7 +715,7 @@ export class ScryptedDeviceBase implements DeviceState {
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
   lockState?: LockState;
-  passwords?: StringSet;
+  passwords?: string[];
   entryOpen?: boolean;
   batteryLevel?: number;
   online?: boolean;
