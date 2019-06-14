@@ -30,37 +30,32 @@ exports.deploy = function(debugHost, noRebind) {
         const fileContents = fs.readFileSync(main).toString();
         console.log(`deploying to ${debugHost}`);
     
-        axios.post(deployUrl, fileContents,
-            {
-                timeout: 10000,
-                maxRedirects: 0,
-                validateStatus: function (status) {
-                    return status >= 200 && status < 300;
-                },
-                headers: {"Content-Type": "text/plain"}
-            }
-        )
+        var packageJson = path.resolve(process.cwd(), 'package.json');
+        packageJson = JSON.parse(fs.readFileSync(packageJson));
+        axios.post(setupUrl, packageJson,
+        {
+            timeout: 10000,
+            maxRedirects: 0,
+            validateStatus: function (status) {
+                return status >= 200 && status < 300;
+            },
+        })
+        .then(() => {
+            console.log(`configured ${debugHost}`);
+
+            return axios.post(deployUrl, fileContents,
+                {
+                    timeout: 10000,
+                    maxRedirects: 0,
+                    validateStatus: function (status) {
+                        return status >= 200 && status < 300;
+                    },
+                    headers: {"Content-Type": "text/plain"}
+                }
+            )
+        })
         .then(() => {
             console.log(`deployed to ${debugHost}`);
-
-            var packageJson = path.resolve(process.cwd(), 'package.json');
-            packageJson = JSON.parse(fs.readFileSync(packageJson));
-
-            var { scrypted } = packageJson;
-            console.log(JSON.stringify(scrypted));
-
-            console.log(`configuring ${debugHost}`);
-            return axios.post(setupUrl, scrypted,
-            {
-                timeout: 10000,
-                maxRedirects: 0,
-                validateStatus: function (status) {
-                    return status >= 200 && status < 300;
-                },
-            });
-        })
-        .then((response) => {
-            console.log(`configured ${debugHost}`);
             resolve();
         })
         .catch((err) => {

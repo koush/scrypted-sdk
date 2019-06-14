@@ -475,17 +475,19 @@ export interface MessagingEndpoint {
  * Settings viewing and editing of device configurations that describe or modify behavior.
  */
 export interface Settings {
-  getSetting(key: string): number|string;
+  getSetting(key: string): boolean|number|string;
   getSettings(): Setting[];
-  putSetting(key: string, value: number|string): void;
+  putSetting(key: string, value: boolean|number|string): void;
 }
 export interface Setting {
   choices?: string[];
   description?: string;
   key?: string;
+  placeholder?: string;
+  reload?: boolean;
   title?: string;
   type?: string;
-  value?: string;
+  value?: boolean|number|string;
 }
 /**
  * The OauthClient can be implemented to perform the browser based Oauth process from within a plugin.
