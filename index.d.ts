@@ -637,6 +637,7 @@ export interface ZwaveManager {
   getValueListValues(valueId: ZwaveValueId): number[];
   getValueUnit(valueId: ZwaveValueId): string;
   refreshValue(valueId: ZwaveValueId): void;
+  setNodeName(homeId: number, nodeId: number, name: string): void;
   setValue(valueId: ZwaveValueId, value: string): void;
   setValueRaw(valueId: ZwaveValueId, value: Buffer): void;
 }
@@ -736,7 +737,6 @@ export interface ZwaveManagerDevice extends ZwaveManager, ScryptedDevice {
 export interface ScryptedStatic {
     scriptSettings: Settings,
     log: Logger,
-    ScryptedDeviceBase,
     systemManager: SystemManager,
     deviceManager: DeviceManager,
     mediaManager: MediaManager,
