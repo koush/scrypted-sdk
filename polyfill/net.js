@@ -48,10 +48,23 @@ Socket.prototype.connect = function () {
                 this.emit('error', new Error(e.getMessage()));
                 return;
             }
-            socket.pause();
+            // read may be called before socket has connected.
+            if (!this._reading) {
+                socket.pause();
+            }
             this._socket = socket;
             this._writer = writer;
             this.once('_writable', function() {
+                // write may be called before socket has connected.
+                if (this._pendingWrite) {
+                    var p = this._pendingWrite;
+                    var pe = this._pendingEncoding;
+                    var pcb = this._pendingCallback;
+                    delete this._pendingWrite;
+                    delete this._pendingEncoding;
+                    delete this._pendingCallback;
+                    this._write(p, pe, pcb);
+                }
                 this.emit('connect');
             }.bind(this));
         }.bind(this),
@@ -63,6 +76,10 @@ Socket.prototype.connect = function () {
 
 Socket.prototype._read = function (len) {
     this._reading = len;
+    // read may be called before socket has connected.
+    if (!this._socket) {
+        return;
+    }
     setImmediate(function() {
         this._socket.resume();
     }.bind(this))
@@ -71,6 +88,13 @@ Socket.prototype._read = function (len) {
 Socket.prototype._write = function (b, encoding, callback) {
     if (!Buffer.isBuffer(b)) {
         b = new Buffer(b);
+    }
+    // write may be called before socket has connected.
+    if (!this._socket) {
+        this._pendingWrite = b;
+        this._pendingEncoding = encoding;
+        this._pendingCallback = callback;
+        return;
     }
     setImmediate(function () {
         this._writer.write(b);
@@ -86,7 +110,7 @@ Socket.prototype._finish = function () {
     var cb = this._finalCallback;
     delete this._finalCallback;
 
-    this._socket.destroy();
+    this._socket.close();
     if (cb)
         cb();
 }

@@ -116,6 +116,11 @@ module.exports = {
         alias: {
             ByteBuffer: "bytebuffer",
             Long: "long",
+
+            // browser provide plugin polyfills
+            _websocket: path.resolve(__dirname, 'polyfill/websocket.js'),
+
+            // node polyfills
             dgram: path.resolve(__dirname, 'polyfill/dgram'),
             cluster: path.resolve(__dirname, 'polyfill/cluster'),
             os: path.resolve(__dirname, 'polyfill/os'),
@@ -137,11 +142,18 @@ module.exports = {
 
     plugins: [
         new InjectPlugin(function () {
-            return files + fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'));
+            return files
+            + fs.readFileSync(path.resolve(__dirname, 'inject/buffer.js'))
+            + fs.readFileSync(path.resolve(__dirname, 'inject/xmlhttprequest.js'))
+            + fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'))
+            ;
         }),
         new webpack.DefinePlugin({
             'process.env.SSDP_COV': false,
-        })
+        }),
+        new webpack.ProvidePlugin({
+            WebSocket: '_websocket'
+        }),
     ],
 
     optimization: {

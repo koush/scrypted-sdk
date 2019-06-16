@@ -27,6 +27,7 @@
     "babel-polyfill": "^6.26.0",
     "browserify-buffertools": "^1.0.2",
     "bytebuffer": "^5.0.1",
+    "event-target-shim": "^5.0.1",
     "events": "^3.0.0",
     "long": "^4.0.0",
     "node-cmd": "^3.0.0",

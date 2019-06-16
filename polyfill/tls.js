@@ -16,7 +16,7 @@ function createConnection() {
 const connect = createConnection;
 
 export {
-    Socket,
+    TLSSocket,
     createConnection,
     connect,
 }
