@@ -54,19 +54,18 @@ Socket.prototype.connect = function () {
             }
             this._socket = socket;
             this._writer = writer;
-            this.once('_writable', function() {
-                // write may be called before socket has connected.
-                if (this._pendingWrite) {
-                    var p = this._pendingWrite;
-                    var pe = this._pendingEncoding;
-                    var pcb = this._pendingCallback;
-                    delete this._pendingWrite;
-                    delete this._pendingEncoding;
-                    delete this._pendingCallback;
-                    this._write(p, pe, pcb);
-                }
-                this.emit('connect');
-            }.bind(this));
+
+            // write may be called before socket has connected.
+            if (this._pendingWrite) {
+                var p = this._pendingWrite;
+                var pe = this._pendingEncoding;
+                var pcb = this._pendingCallback;
+                delete this._pendingWrite;
+                delete this._pendingEncoding;
+                delete this._pendingCallback;
+                this._write(p, pe, pcb);
+            }
+            this.emit('connect');
         }.bind(this),
         this._close.bind(this),
         this._error.bind(this),
