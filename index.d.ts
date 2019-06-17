@@ -20,6 +20,10 @@ export interface DeviceState {
    */
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
+  thermostatMode?: ThermostatMode;
+  thermostatSetpoint?: number;
+  thermostatSetpointHigh?: number;
+  thermostatSetpointLow?: number;
   lockState?: LockState;
   passwords?: string[];
   entryOpen?: boolean;
@@ -210,14 +214,15 @@ export interface Dock {
  * TemperatureSetting represents a thermostat device.
  */
 export interface TemperatureSetting extends Thermometer, HumiditySensor {
-  getAvailableThermostatModes(): ThermostatMode[];
-  getTemperatureSetpoint(): number;
-  getTemperatureSetpointHigh(): number;
-  getTemperatureSetpointLow(): number;
-  getThermostatMode(): ThermostatMode;
-  setTemperatureSetRange(low: number, high: number): void;
-  setTemperatureSetpoint(degrees: number): void;
+  getThermostatAvailableModes(): ThermostatMode[];
   setThermostatMode(mode: ThermostatMode): void;
+  setThermostatSetpoint(degrees: number): void;
+  setThermostatSetpointHigh(high: number): void;
+  setThermostatSetpointLow(low: number): void;
+  thermostatMode?: ThermostatMode;
+  thermostatSetpoint?: number;
+  thermostatSetpointHigh?: number;
+  thermostatSetpointLow?: number;
 }
 export interface Thermometer {
   /**
@@ -715,6 +720,10 @@ export class ScryptedDeviceBase implements DeviceState {
    */
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
+  thermostatMode?: ThermostatMode;
+  thermostatSetpoint?: number;
+  thermostatSetpointHigh?: number;
+  thermostatSetpointLow?: number;
   lockState?: LockState;
   passwords?: string[];
   entryOpen?: boolean;

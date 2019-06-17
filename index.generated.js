@@ -127,6 +127,42 @@ class ScryptedDeviceBase {
         this._deviceState.humidity = value;
     }
 
+    get thermostatMode() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.thermostatMode;
+    }
+    set thermostatMode(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.thermostatMode = value;
+    }
+
+    get thermostatSetpoint() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.thermostatSetpoint;
+    }
+    set thermostatSetpoint(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.thermostatSetpoint = value;
+    }
+
+    get thermostatSetpointHigh() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.thermostatSetpointHigh;
+    }
+    set thermostatSetpointHigh(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.thermostatSetpointHigh = value;
+    }
+
+    get thermostatSetpointLow() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.thermostatSetpointLow;
+    }
+    set thermostatSetpointLow(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.thermostatSetpointLow = value;
+    }
+
     get lockState() {
         this._lazyLoadDeviceState();
         return this._deviceState.lockState;
