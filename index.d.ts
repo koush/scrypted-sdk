@@ -20,6 +20,7 @@ export interface DeviceState {
    */
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
+  thermostatAvailableModes?: ThermostatMode[];
   thermostatMode?: ThermostatMode;
   thermostatSetpoint?: number;
   thermostatSetpointHigh?: number;
@@ -47,7 +48,6 @@ export interface ScryptedDevice {
    * Subscribe to events from a specific interface on a device, such as 'OnOff' or 'Brightness'.
    */
   listen(event: string|EventListenerOptions, callback: (eventSource: ScryptedDevice, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
-  events?: string[];
   id?: string;
   interfaces?: string[];
   name?: string;
@@ -214,11 +214,11 @@ export interface Dock {
  * TemperatureSetting represents a thermostat device.
  */
 export interface TemperatureSetting extends Thermometer, HumiditySensor {
-  getThermostatAvailableModes(): ThermostatMode[];
   setThermostatMode(mode: ThermostatMode): void;
   setThermostatSetpoint(degrees: number): void;
   setThermostatSetpointHigh(high: number): void;
   setThermostatSetpointLow(low: number): void;
+  thermostatAvailableModes?: ThermostatMode[];
   thermostatMode?: ThermostatMode;
   thermostatSetpoint?: number;
   thermostatSetpointHigh?: number;
@@ -387,7 +387,7 @@ export interface Program {
   /**
    * Asynchronously run a script given the provided arguments.
    */
-  runAsync(args: object[]): Future;
+  runAsync(args: object[]): Promise<object>;
 }
 /**
  * SoftwareUpdate provides a way to check for updates and install them. This may be a Scrypted Plugin or device firmware.
@@ -546,11 +546,11 @@ export interface DeviceManager {
   /**
    * Fire an event for this plugin's device.
    */
-  onDeviceEvent(eventInterface: string, eventData: object): void;
+  onDeviceEvent(eventInterface: string, eventData: any): void;
   /**
    * Fire an event for a device provided by this plugin.
    */
-  onDeviceEvent(nativeId: string, eventInterface: string, eventData: object): void;
+  onDeviceEvent(nativeId: string, eventInterface: string, eventData: any): void;
   /**
    * onDevicesChanged is used to sync Scrypted with devices that are attached to a hub, such as Hue or SmartThings. All the devices should be reported at once.
    */
@@ -592,6 +592,10 @@ export interface SystemManager {
    * Get the current state of a device.
    */
   getDeviceState(id: string): object;
+  /**
+   * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication and token mechanisms.
+   */
+  getPublicCloudEndpoint(): Promise<string>;
   /**
    * Get the current state of every device.
    */
@@ -695,8 +699,6 @@ export enum ZwaveNotificationType {
   Type_UserAlerts = "Type_UserAlerts",
   Type_ManufacturerSpecificDBReady = "Type_ManufacturerSpecificDBReady",
 }
-export interface ZwaveNotifications {
-}
 
 export class ScryptedDeviceBase implements DeviceState {
   _nativeId: string;
@@ -720,6 +722,7 @@ export class ScryptedDeviceBase implements DeviceState {
    */
   temperatureUnit?: TemperatureUnit;
   humidity?: number;
+  thermostatAvailableModes?: ThermostatMode[];
   thermostatMode?: ThermostatMode;
   thermostatSetpoint?: number;
   thermostatSetpointHigh?: number;

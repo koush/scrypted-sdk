@@ -127,6 +127,15 @@ class ScryptedDeviceBase {
         this._deviceState.humidity = value;
     }
 
+    get thermostatAvailableModes() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.thermostatAvailableModes;
+    }
+    set thermostatAvailableModes(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.thermostatAvailableModes = value;
+    }
+
     get thermostatMode() {
         this._lazyLoadDeviceState();
         return this._deviceState.thermostatMode;
