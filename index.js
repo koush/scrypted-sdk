@@ -23,10 +23,12 @@ var mediaManagerProxy = new Proxy(function(){}, {
 var sdk = require('./index.generated.js');
 sdk = Object.assign(sdk, {
     log,
-    systemManager,
-    deviceManager,
     scriptSettings,
+
+    deviceManager,
+    endpointManager,
     mediaManager: mediaManagerProxy,
+    systemManager,
     zwaveManager,
 });
 

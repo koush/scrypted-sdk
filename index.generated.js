@@ -271,6 +271,15 @@ class ScryptedDeviceBase {
         this._deviceState.motionDetected = value;
     }
 
+    get occupied() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.occupied;
+    }
+    set occupied(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.occupied = value;
+    }
+
     get flooded() {
         this._lazyLoadDeviceState();
         return this._deviceState.flooded;

@@ -36,6 +36,7 @@ export interface DeviceState {
   binaryState?: boolean;
   intrusionDetected?: boolean;
   motionDetected?: boolean;
+  occupied?: boolean;
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
@@ -417,6 +418,7 @@ export interface MotionSensor {
   motionDetected?: boolean;
 }
 export interface OccupancySensor {
+  occupied?: boolean;
 }
 export interface FloodSensor {
   flooded?: boolean;
@@ -489,7 +491,7 @@ export interface Setting {
   description?: string;
   key?: string;
   placeholder?: string;
-  reload?: boolean;
+  readonly?: boolean;
   title?: string;
   type?: string;
   value?: boolean|number|string;
@@ -517,9 +519,16 @@ export interface MediaManager {
    */
   convertMediaObjectToUri(mediaObject: MediaObject, toMimeType: string): Promise<string>;
   /**
+   * Create a MediaObject. The media will be created from the provided FFmpeg input arguments.
+   */
+  createFFmpegMediaObject(ffMpegInput: FFMpegInput): MediaObject;
+  /**
    * Create a MediaObject. The mime type needs to be provided up front, but the data can be a Uri string, Buffer, or a Promise for a Uri string or Buffer.
    */
   createMediaObject(data: string|Buffer|Promise<string|Buffer>, mimeType: string): MediaObject;
+}
+export interface FFMpegInput {
+  inputArguments?: string[];
 }
 /**
  * DeviceManager is the interface used by DeviceProvider to report new devices, device states, and device events to Scrypted.
@@ -537,8 +546,15 @@ export interface DeviceManager {
    * Get the device state maintained by Scrypted. Setting properties on this state will update the state in Scrypted.
    */
   getDeviceState(nativeId: string): DeviceState;
+  /**
+   * Get the per script Storage object.
+   */
   getDeviceStorage(): Storage;
+  /**
+   * Get the per device Storage object.
+   */
   getDeviceStorage(nativeId: string): Storage;
+  getNativeIds(): string[];
   /**
    * onDeviceDiscovered is used to report new devices that are trickle discovered, one by one, such as via a network broadcast.
    */
@@ -577,6 +593,19 @@ export interface DeviceManifest {
   devices?: Device[];
 }
 /**
+ * EndpointManager creates publicly accessible external URLs that can be used to contact your Scrypted Plugin.
+ */
+export interface EndpointManager {
+  /**
+   * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication and token mechanisms.
+   */
+  getPublicCloudEndpoint(): Promise<string>;
+  /**
+   * Get an URL that can be used to send a push message to the client. This differs from a cloud endpoint, in that, the Plugin does not send a response back. Plugin implementation is responsible for authentication and token mechanisms.
+   */
+  getPublicPushEndpoint(): Promise<string>;
+}
+/**
  * SystemManager is used by scripts to query device state and access devices.
  */
 export interface SystemManager {
@@ -592,10 +621,6 @@ export interface SystemManager {
    * Get the current state of a device.
    */
   getDeviceState(id: string): object;
-  /**
-   * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication and token mechanisms.
-   */
-  getPublicCloudEndpoint(): Promise<string>;
   /**
    * Get the current state of every device.
    */
@@ -617,6 +642,7 @@ export interface HttpRequestHandler {
 export interface HttpRequest {
   body?: string;
   headers?: object;
+  isPublicEndpoint?: boolean;
   method?: string;
   rootPath?: string;
   url?: string;
@@ -634,6 +660,16 @@ export interface HttpResponseOptions {
   asContent?: boolean;
   code?: number;
   headers?: object;
+}
+export interface PushHandler {
+  /**
+   * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
+   */
+  getEndpoint(): string;
+  /**
+   * Callback to handle an incoming push.
+   */
+  onPush(request: HttpRequest): void;
 }
 export interface ZwaveManager {
   getNodeManufacturerName(homeId: number, nodeId: number): string;
@@ -738,6 +774,7 @@ export class ScryptedDeviceBase implements DeviceState {
   binaryState?: boolean;
   intrusionDetected?: boolean;
   motionDetected?: boolean;
+  occupied?: boolean;
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
@@ -747,11 +784,13 @@ export interface ZwaveManagerDevice extends ZwaveManager, ScryptedDevice {
 }
 
 export interface ScryptedStatic {
-    scriptSettings: Settings,
     log: Logger,
-    systemManager: SystemManager,
+    scriptSettings: Settings,
+
     deviceManager: DeviceManager,
+    endpointManager: EndpointManager,
     mediaManager: MediaManager,
+    systemManager: SystemManager,
     zwaveManager: ZwaveManagerDevice,
 }
 
