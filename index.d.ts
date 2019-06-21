@@ -627,6 +627,18 @@ export interface SystemManager {
   getSystemState(): object;
 }
 /**
+ * Android provides limited access to the Android system, to send Intents to other applications, such as Tasker. See Android SDK documentation for more information.
+ */
+export interface Android {
+  /**
+   * Create a new Intent. Use one of the send methods to send broadcasts, start activities, or start services.
+   */
+  newIntent(): Intent;
+  sendBroadcast(arg0: Intent): void;
+  startActivity(arg0: Intent): void;
+  startService(arg0: Intent): void;
+}
+/**
  * The HttpRequestHandler allows handling of web requests under the endpoint path: /endpoint/<endpoint>/*.
  */
 export interface HttpRequestHandler {
@@ -782,11 +794,18 @@ export class ScryptedDeviceBase implements DeviceState {
 
 export interface ZwaveManagerDevice extends ZwaveManager, ScryptedDevice {
 }
+/**
+ * Android Intent.
+ * See: https://developer.android.com/reference/android/content/Intent
+ */
+interface Intent {
 
+}
 export interface ScryptedStatic {
     log: Logger,
     scriptSettings: Settings,
 
+    android: Android,
     deviceManager: DeviceManager,
     endpointManager: EndpointManager,
     mediaManager: MediaManager,

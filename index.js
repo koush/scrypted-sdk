@@ -25,6 +25,7 @@ sdk = Object.assign(sdk, {
     log,
     scriptSettings,
 
+    android,
     deviceManager,
     endpointManager,
     mediaManager: mediaManagerProxy,
