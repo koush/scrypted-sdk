@@ -597,11 +597,19 @@ export interface DeviceManifest {
  */
 export interface EndpointManager {
   /**
-   * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication and token mechanisms.
+   * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are without any encyption. Plugin implementation is responsible for authentication.
+   */
+  getInsecurePublicLocalEndpoint(): string;
+  /**
+   * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication.
    */
   getPublicCloudEndpoint(): Promise<string>;
   /**
-   * Get an URL that can be used to send a push message to the client. This differs from a cloud endpoint, in that, the Plugin does not send a response back. Plugin implementation is responsible for authentication and token mechanisms.
+   * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are over SSL with a self signed certificate. Plugin implementation is responsible for authentication.
+   */
+  getPublicLocalEndpoint(): string;
+  /**
+   * Get an URL that can be used to send a push message to the client. This differs from a cloud endpoint, in that, the Plugin does not send a response back. Plugin implementation is responsible for authentication.
    */
   getPublicPushEndpoint(): Promise<string>;
 }
