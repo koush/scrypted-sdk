@@ -16,18 +16,18 @@ exports.deploy = function(debugHost, noRebind) {
         else
             out = path.resolve(process.cwd(), 'out');
     
-        const outFilename = 'main.js';
+        const outFilename = 'plugin.zip';
         const main = path.resolve(out, outFilename);
         if (!fs.existsSync(main)) {
             console.error('npm run scrypted-webpack to build a webpack bundle for Scrypted.')
-            reject(`Missing webpack bundle: ${main}`);
+            reject(new Error(`Missing webpack bundle: ${main}`));
             return 3;
         }
     
         const deployUrl = `https://${debugHost}:9443/web/component/script/deploy?${noRebind ? 'no-rebind' : ''}`
         const setupUrl = `https://${debugHost}:9443/web/component/script/setup?${noRebind ? 'no-rebind' : ''}`
     
-        const fileContents = fs.readFileSync(main).toString();
+        const fileContents = fs.readFileSync(main);
         console.log(`deploying to ${debugHost}`);
     
         var packageJson = path.resolve(process.cwd(), 'package.json');
@@ -50,7 +50,9 @@ exports.deploy = function(debugHost, noRebind) {
                     validateStatus: function (status) {
                         return status >= 200 && status < 300;
                     },
-                    headers: {"Content-Type": "text/plain"}
+                    headers: {
+                        "Content-Type": "application/zip "
+                    }
                 }
             )
         })
@@ -60,7 +62,7 @@ exports.deploy = function(debugHost, noRebind) {
         })
         .catch((err) => {
             console.error(err.message);
-            reject('deploy failed');
+            reject(err);
         });
     });
 }
@@ -85,7 +87,7 @@ exports.debug = function(debugHost) {
         })
         .catch((err) => {
             console.error(err.message);
-            reject('debug failed');
+            reject(err);
         });
     })
 }

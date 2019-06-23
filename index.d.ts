@@ -593,7 +593,7 @@ export interface DeviceManifest {
   devices?: Device[];
 }
 /**
- * EndpointManager creates publicly accessible external URLs that can be used to contact your Scrypted Plugin.
+ * EndpointManager provides publicly accessible URLs that can be used to contact your Scrypted Plugin.
  */
 export interface EndpointManager {
   /**
@@ -642,12 +642,12 @@ export interface Android {
    * Create a new Intent. Use one of the send methods to send broadcasts, start activities, or start services.
    */
   newIntent(): Intent;
-  sendBroadcast(arg0: Intent): void;
-  startActivity(arg0: Intent): void;
-  startService(arg0: Intent): void;
+  sendBroadcast(intent: Intent): void;
+  startActivity(intent: Intent): void;
+  startService(intent: Intent): void;
 }
 /**
- * The HttpRequestHandler allows handling of web requests under the endpoint path: /endpoint/<endpoint>/*.
+ * The HttpRequestHandler allows handling of web requests under the endpoint path: /endpoint/npm-package-name/*.
  */
 export interface HttpRequestHandler {
   /**
@@ -675,6 +675,8 @@ export interface HttpResponse {
   send(options: HttpResponseOptions, body: Buffer): void;
   send(body: string): void;
   send(body: Buffer): void;
+  sendFile(options: HttpResponseOptions, path: string): void;
+  sendFile(path: string): void;
 }
 export interface HttpResponseOptions {
   asContent?: boolean;

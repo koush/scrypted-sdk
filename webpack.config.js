@@ -13,40 +13,6 @@ else {
     out = path.resolve(cwd, 'out');
 }
 
-//
-var files;
-try {
-    var filesDir = path.resolve(cwd, 'fs');
-    files = [];
-    function packageDirectory(root, filesDir) {
-        var dirents = fs.readdirSync(path.resolve(root, filesDir), {
-            withFileTypes: true,
-        });
-    
-        for (var dirent of dirents) {
-            if (dirent.isDirectory()) {
-                packageDirectory(root, path.join(filesDir, dirent.name));
-            }
-            else if (dirent.isFile()) {
-                var rootPath = path.join(filesDir, dirent.name);
-                var filePath = path.resolve(root, filesDir, dirent.name);
-                files.push(`require('fs').registerFile('/${rootPath}', require('raw-loader!${filePath}'))`)
-            }
-        }
-    }
-    packageDirectory(filesDir, '.');
-    if (files.length) {
-        files = files.join('\n') + '\n';
-        console.error(files);
-    }
-    else {
-        files = '';
-    }
-}
-catch (e) {
-    files = '';
-}
-
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
     output: {
@@ -142,7 +108,7 @@ module.exports = {
 
     plugins: [
         new InjectPlugin(function () {
-            return files
+            return ''
             + fs.readFileSync(path.resolve(__dirname, 'inject/buffer.js'))
             + fs.readFileSync(path.resolve(__dirname, 'inject/xmlhttprequest.js'))
             + fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'))
