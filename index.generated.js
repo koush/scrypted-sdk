@@ -28,6 +28,42 @@ class ScryptedDeviceBase {
         }
     }
 
+    get interfaces() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.interfaces;
+    }
+    set interfaces(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.interfaces = value;
+    }
+
+    get name() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.name;
+    }
+    set name(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.name = value;
+    }
+
+    get room() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.room;
+    }
+    set room(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.room = value;
+    }
+
+    get type() {
+        this._lazyLoadDeviceState();
+        return this._deviceState.type;
+    }
+    set type(value) {
+        this._lazyLoadDeviceState();
+        this._deviceState.type = value;
+    }
+
     get on() {
         this._lazyLoadDeviceState();
         return this._deviceState.on;
@@ -404,4 +440,447 @@ module.exports.ZwaveNotificationType = {
   Type_NodeReset: "Type_NodeReset",
   Type_UserAlerts: "Type_UserAlerts",
   Type_ManufacturerSpecificDBReady: "Type_ManufacturerSpecificDBReady",
+}
+
+module.exports.ScryptedInterface = {
+  OnOff: "OnOff",
+  Brightness: "Brightness",
+  ColorSettingTemperature: "ColorSettingTemperature",
+  ColorSettingRgb: "ColorSettingRgb",
+  ColorSettingHsv: "ColorSettingHsv",
+  Notifier: "Notifier",
+  StartStop: "StartStop",
+  Dock: "Dock",
+  TemperatureSetting: "TemperatureSetting",
+  Thermometer: "Thermometer",
+  HumiditySensor: "HumiditySensor",
+  Camera: "Camera",
+  VideoCamera: "VideoCamera",
+  Lock: "Lock",
+  PasswordStore: "PasswordStore",
+  Authenticator: "Authenticator",
+  Scene: "Scene",
+  Entry: "Entry",
+  EntrySensor: "EntrySensor",
+  DeviceProvider: "DeviceProvider",
+  Alarm: "Alarm",
+  Battery: "Battery",
+  Refresh: "Refresh",
+  MediaPlayer: "MediaPlayer",
+  Online: "Online",
+  SoftwareUpdate: "SoftwareUpdate",
+  BufferConverter: "BufferConverter",
+  BinarySensor: "BinarySensor",
+  IntrusionSensor: "IntrusionSensor",
+  AudioSensor: "AudioSensor",
+  MotionSensor: "MotionSensor",
+  OccupancySensor: "OccupancySensor",
+  FloodSensor: "FloodSensor",
+  UltravioletSensor: "UltravioletSensor",
+  LuminanceSensor: "LuminanceSensor",
+  MediaSource: "MediaSource",
+  MessagingEndpoint: "MessagingEndpoint",
+  Settings: "Settings",
+  OauthClient: "OauthClient",
+  Android: "Android",
+  HttpRequestHandler: "HttpRequestHandler",
+  EngineIOHandler: "EngineIOHandler",
+  PushHandler: "PushHandler",
+}
+
+module.exports.ScryptedInterfaceDescriptors = {
+  OnOff: {
+      name: "OnOff",
+      properties: [
+        "on",
+      ],
+      methods: [
+        "turnOff",
+        "turnOn",
+      ]
+  },
+  Brightness: {
+      name: "Brightness",
+      properties: [
+        "brightness",
+      ],
+      methods: [
+        "setBrightness",
+      ]
+  },
+  ColorSettingTemperature: {
+      name: "ColorSettingTemperature",
+      properties: [
+        "colorTemperature",
+      ],
+      methods: [
+        "getTemperatureMaxK",
+        "getTemperatureMinK",
+        "setTemperature",
+      ]
+  },
+  ColorSettingRgb: {
+      name: "ColorSettingRgb",
+      properties: [
+        "rgb",
+      ],
+      methods: [
+        "setRgb",
+      ]
+  },
+  ColorSettingHsv: {
+      name: "ColorSettingHsv",
+      properties: [
+        "hsv",
+      ],
+      methods: [
+        "setHsv",
+      ]
+  },
+  Notifier: {
+      name: "Notifier",
+      properties: [
+      ],
+      methods: [
+        "sendNotification",
+      ]
+  },
+  StartStop: {
+      name: "StartStop",
+      properties: [
+        "paused",
+        "running",
+      ],
+      methods: [
+        "isPausable",
+        "pause",
+        "resume",
+        "start",
+        "stop",
+      ]
+  },
+  Dock: {
+      name: "Dock",
+      properties: [
+        "docked",
+      ],
+      methods: [
+        "dock",
+      ]
+  },
+  TemperatureSetting: {
+      name: "TemperatureSetting",
+      properties: [
+        "thermostatAvailableModes",
+        "thermostatMode",
+        "thermostatSetpoint",
+        "thermostatSetpointHigh",
+        "thermostatSetpointLow",
+      ],
+      methods: [
+        "setThermostatMode",
+        "setThermostatSetpoint",
+        "setThermostatSetpointHigh",
+        "setThermostatSetpointLow",
+      ]
+  },
+  Thermometer: {
+      name: "Thermometer",
+      properties: [
+        "temperature",
+        "temperatureUnit",
+      ],
+      methods: [
+      ]
+  },
+  HumiditySensor: {
+      name: "HumiditySensor",
+      properties: [
+        "humidity",
+      ],
+      methods: [
+      ]
+  },
+  Camera: {
+      name: "Camera",
+      properties: [
+      ],
+      methods: [
+        "takePicture",
+      ]
+  },
+  VideoCamera: {
+      name: "VideoCamera",
+      properties: [
+      ],
+      methods: [
+        "getVideoStream",
+      ]
+  },
+  Lock: {
+      name: "Lock",
+      properties: [
+        "lockState",
+      ],
+      methods: [
+        "lock",
+        "unlock",
+      ]
+  },
+  PasswordStore: {
+      name: "PasswordStore",
+      properties: [
+        "passwords",
+      ],
+      methods: [
+        "addPassword",
+        "removePassword",
+      ]
+  },
+  Authenticator: {
+      name: "Authenticator",
+      properties: [
+      ],
+      methods: [
+        "checkPassword",
+      ]
+  },
+  Scene: {
+      name: "Scene",
+      properties: [
+      ],
+      methods: [
+        "activate",
+        "deactivate",
+        "isReversible",
+      ]
+  },
+  Entry: {
+      name: "Entry",
+      properties: [
+      ],
+      methods: [
+        "closeEntry",
+        "openEntry",
+      ]
+  },
+  EntrySensor: {
+      name: "EntrySensor",
+      properties: [
+        "entryOpen",
+      ],
+      methods: [
+      ]
+  },
+  DeviceProvider: {
+      name: "DeviceProvider",
+      properties: [
+      ],
+      methods: [
+        "discoverDevices",
+        "getDevice",
+      ]
+  },
+  Alarm: {
+      name: "Alarm",
+      properties: [
+      ],
+      methods: [
+        "getClockType",
+        "getHour",
+        "getMinute",
+        "isEnabled",
+      ]
+  },
+  Battery: {
+      name: "Battery",
+      properties: [
+        "batteryLevel",
+      ],
+      methods: [
+      ]
+  },
+  Refresh: {
+      name: "Refresh",
+      properties: [
+      ],
+      methods: [
+        "getRefreshFrequency",
+        "refresh",
+      ]
+  },
+  MediaPlayer: {
+      name: "MediaPlayer",
+      properties: [
+      ],
+      methods: [
+        "load",
+        "pause",
+        "play",
+        "stop",
+      ]
+  },
+  Online: {
+      name: "Online",
+      properties: [
+        "online",
+      ],
+      methods: [
+      ]
+  },
+  SoftwareUpdate: {
+      name: "SoftwareUpdate",
+      properties: [
+        "updateAvailable",
+      ],
+      methods: [
+        "checkForUpdate",
+        "installUpdate",
+      ]
+  },
+  BufferConverter: {
+      name: "BufferConverter",
+      properties: [
+        "fromMimeType",
+        "toMimeType",
+      ],
+      methods: [
+        "convert",
+      ]
+  },
+  BinarySensor: {
+      name: "BinarySensor",
+      properties: [
+        "binaryState",
+      ],
+      methods: [
+      ]
+  },
+  IntrusionSensor: {
+      name: "IntrusionSensor",
+      properties: [
+        "intrusionDetected",
+      ],
+      methods: [
+      ]
+  },
+  AudioSensor: {
+      name: "AudioSensor",
+      properties: [
+      ],
+      methods: [
+      ]
+  },
+  MotionSensor: {
+      name: "MotionSensor",
+      properties: [
+        "motionDetected",
+      ],
+      methods: [
+      ]
+  },
+  OccupancySensor: {
+      name: "OccupancySensor",
+      properties: [
+        "occupied",
+      ],
+      methods: [
+      ]
+  },
+  FloodSensor: {
+      name: "FloodSensor",
+      properties: [
+        "flooded",
+      ],
+      methods: [
+      ]
+  },
+  UltravioletSensor: {
+      name: "UltravioletSensor",
+      properties: [
+        "ultraviolet",
+      ],
+      methods: [
+      ]
+  },
+  LuminanceSensor: {
+      name: "LuminanceSensor",
+      properties: [
+        "luminance",
+      ],
+      methods: [
+      ]
+  },
+  MediaSource: {
+      name: "MediaSource",
+      properties: [
+      ],
+      methods: [
+        "getMedia",
+      ]
+  },
+  MessagingEndpoint: {
+      name: "MessagingEndpoint",
+      properties: [
+      ],
+      methods: [
+      ]
+  },
+  Settings: {
+      name: "Settings",
+      properties: [
+      ],
+      methods: [
+        "getSetting",
+        "getSettings",
+        "putSetting",
+      ]
+  },
+  OauthClient: {
+      name: "OauthClient",
+      properties: [
+      ],
+      methods: [
+        "getOauthUrl",
+        "onOauthCallback",
+      ]
+  },
+  Android: {
+      name: "Android",
+      properties: [
+      ],
+      methods: [
+        "newIntent",
+        "sendBroadcast",
+        "startActivity",
+        "startService",
+      ]
+  },
+  HttpRequestHandler: {
+      name: "HttpRequestHandler",
+      properties: [
+      ],
+      methods: [
+        "getEndpoint",
+        "onRequest",
+      ]
+  },
+  EngineIOHandler: {
+      name: "EngineIOHandler",
+      properties: [
+      ],
+      methods: [
+        "getEndpoint",
+        "onConnection",
+      ]
+  },
+  PushHandler: {
+      name: "PushHandler",
+      properties: [
+      ],
+      methods: [
+        "getEndpoint",
+        "onPush",
+      ]
+  },
 }

@@ -21,17 +21,21 @@ var mediaManagerProxy = new Proxy(function(){}, {
 })
 
 var sdk = require('./index.generated.js');
-sdk = Object.assign(sdk, {
-    log,
-    scriptSettings,
-
-    android,
-    deviceManager,
-    endpointManager,
-    mediaManager: mediaManagerProxy,
-    systemManager,
-    zwaveManager,
-});
+try {
+    sdk = Object.assign(sdk, {
+        log,
+        scriptSettings,
+    
+        android,
+        deviceManager,
+        endpointManager,
+        mediaManager: mediaManagerProxy,
+        systemManager,
+        zwaveManager,
+    });
+    }
+catch (e) {
+}
 
 module.exports = sdk;
 module.exports.default = sdk;

@@ -3,6 +3,10 @@
  * DeviceState is returned by DeviceManager.getDeviceState, and allows getting/setting of a device provided by a DeviceProvider.
  */
 export interface DeviceState {
+  interfaces?: string[];
+  name?: string;
+  room?: string;
+  type?: ScryptedDeviceType;
   on?: boolean;
   brightness?: number;
   colorTemperature?: number;
@@ -48,10 +52,18 @@ export interface ScryptedDevice {
   /**
    * Subscribe to events from a specific interface on a device, such as 'OnOff' or 'Brightness'.
    */
-  listen(event: string|EventListenerOptions, callback: (eventSource: ScryptedDevice, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+  listen(event: ScryptedInterface|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+
+  setName(name: string): void;
+
+  setRoom(arg0: string): void;
+
+  setType(type: ScryptedDeviceType): void;
+
   id?: string;
   interfaces?: string[];
   name?: string;
+  room?: string;
   type?: ScryptedDeviceType;
 }
 export interface EventListenerOptions {
@@ -62,7 +74,7 @@ export interface EventListenerOptions {
   /**
    * The EventListener will subscribe to this event interface.
    */
-  event?: string;
+  event?: ScryptedInterface;
   /**
    * This EventListener will passively watch for events, and not initiate polling.
    */
@@ -72,20 +84,8 @@ export interface EventListenerOptions {
  * Returned when an event listener is attached to an EventEmitter. Call removeListener to unregister from events.
  */
 export interface EventListenerRegister {
-  getListener(): EventListener;
   removeListener(): void;
-}
-export interface EventListener {
-  /**
-   * This device type can be hooked by Automation actions to handle events. The event source, event details (interface, time, property), and event data are all passed to the listener as arguments.
-   */
-  onEvent(eventSource: ScryptedDevice, eventDetails: EventDetails, eventData: object): void;
-}
-export interface EventDetails {
-  changed?: boolean;
-  eventInterface?: string;
-  eventTime?: number;
-  property?: string;
+
 }
 export enum ScryptedDeviceType {
   Builtin = "Builtin",
@@ -118,7 +118,9 @@ export enum ScryptedDeviceType {
  */
 export interface OnOff {
   turnOff(): void;
+
   turnOn(): void;
+
   on?: boolean;
 }
 /**
@@ -126,6 +128,7 @@ export interface OnOff {
  */
 export interface Brightness {
   setBrightness(brightness: number): void;
+
   brightness?: number;
 }
 /**
@@ -133,8 +136,11 @@ export interface Brightness {
  */
 export interface ColorSettingTemperature {
   getTemperatureMaxK(): number;
+
   getTemperatureMinK(): number;
+
   setTemperature(kelvin: number): void;
+
   colorTemperature?: number;
 }
 /**
@@ -142,6 +148,7 @@ export interface ColorSettingTemperature {
  */
 export interface ColorSettingRgb {
   setRgb(r: number, g: number, b: number): void;
+
   rgb?: ColorRgb;
 }
 /**
@@ -157,6 +164,7 @@ export interface ColorRgb {
  */
 export interface ColorSettingHsv {
   setHsv(hue: number, saturation: number, value: number): void;
+
   hsv?: ColorHsv;
 }
 /**
@@ -185,6 +193,7 @@ export interface Notifier {
 Passing null uses the native type of the MediaObject. If that is not supported by the notifier, the media will be converted to a compatible type.
    */
   sendNotification(title: string, body: string, media: URL|MediaObject, mimeType: string): void;
+
 }
 /**
  * MediaObject is an intermediate object within Scrypted to represent all media objects. Plugins should use the MediaConverter to convert the Scrypted MediaObject into a desired type, whether it is a externally accessible URL, a Buffer, etc.
@@ -197,10 +206,15 @@ export interface MediaObject {
  */
 export interface StartStop {
   isPausable(): boolean;
+
   pause(): void;
+
   resume(): void;
+
   start(): void;
+
   stop(): void;
+
   paused?: boolean;
   running?: boolean;
 }
@@ -209,6 +223,7 @@ export interface StartStop {
  */
 export interface Dock {
   dock(): void;
+
   docked?: boolean;
 }
 /**
@@ -216,9 +231,13 @@ export interface Dock {
  */
 export interface TemperatureSetting extends Thermometer, HumiditySensor {
   setThermostatMode(mode: ThermostatMode): void;
+
   setThermostatSetpoint(degrees: number): void;
+
   setThermostatSetpointHigh(high: number): void;
+
   setThermostatSetpointLow(low: number): void;
+
   thermostatAvailableModes?: ThermostatMode[];
   thermostatMode?: ThermostatMode;
   thermostatSetpoint?: number;
@@ -259,19 +278,23 @@ export enum ThermostatMode {
  */
 export interface Camera {
   takePicture(): MediaObject;
+
 }
 /**
  * VideoCamera devices can capture video streams.
  */
 export interface VideoCamera {
   getVideoStream(): MediaObject;
+
 }
 /**
  * Lock controls devices that can lock or unlock entries. Often works in tandem with PasswordControl.
  */
 export interface Lock {
   lock(): void;
+
   unlock(): void;
+
   lockState?: LockState;
 }
 export enum LockState {
@@ -284,7 +307,9 @@ export enum LockState {
  */
 export interface PasswordStore extends Authenticator {
   addPassword(password: string): void;
+
   removePassword(password: string): void;
+
   passwords?: string[];
 }
 /**
@@ -292,24 +317,30 @@ export interface PasswordStore extends Authenticator {
  */
 export interface Authenticator {
   checkPassword(password: string): boolean;
+
 }
 /**
  * Scenes control multiple different devices into a given state.
  */
 export interface Scene {
   activate(): void;
+
   deactivate(): void;
+
   /**
    * If a scene can be reversed, isReversible should return true. Otherwise deactivate will not be called.
    */
   isReversible(): boolean;
+
 }
 /**
  * Entry represents devices that can open and close barriers, such as garage doors.
  */
 export interface Entry extends EntrySensor {
   closeEntry(): void;
+
   openEntry(): void;
+
 }
 export interface EntrySensor {
   entryOpen?: boolean;
@@ -322,16 +353,22 @@ export interface DeviceProvider {
    * Initiate device discovery for the specified duration.
    */
   discoverDevices(duration: number): void;
+
   /**
    * Get an instance of a previously discovered device that was reported to the device manager.
    */
   getDevice(nativeId: string): object;
+
 }
 export interface Alarm {
   getClockType(): ClockType;
+
   getHour(): number;
+
   getMinute(): number;
+
   isEnabled(day: number): boolean;
+
 }
 export enum ClockType {
   AM = "AM",
@@ -356,19 +393,25 @@ export interface Refresh {
    * Get the recommended refresh/poll frequency in seconds for this device.
    */
   getRefreshFrequency(): number;
+
   /**
    * This method is called by Scrypted when the properties of the device need to be refreshed. When the device has completed the refresh, the appropriate DeviceState properties should be set. The parameters provide the specific interface that needs to be refreshed and whether it was user initiated (via UI or voice).
    */
   refresh(refreshInterface: string, userInitiated: boolean): void;
+
 }
 /**
  * MediaPlayer allows media playback on screen or speaker devices, such as Chromecasts or TVs.
  */
 export interface MediaPlayer {
   load(media: URL|MediaObject, options: MediaPlayerOptions): void;
+
   pause(): void;
+
   play(): void;
+
   stop(): void;
+
 }
 export interface MediaPlayerOptions {
   autoplay?: boolean;
@@ -385,17 +428,21 @@ export interface Program {
    * Synchronously run a script given the provided arguments.
    */
   run(args: object[]): object;
+
   /**
    * Asynchronously run a script given the provided arguments.
    */
   runAsync(args: object[]): Promise<object>;
+
 }
 /**
  * SoftwareUpdate provides a way to check for updates and install them. This may be a Scrypted Plugin or device firmware.
  */
 export interface SoftwareUpdate {
   checkForUpdate(): void;
+
   installUpdate(): void;
+
   updateAvailable?: boolean;
 }
 /**
@@ -403,6 +450,7 @@ export interface SoftwareUpdate {
  */
 export interface BufferConverter {
   convert(buffer: Buffer, fromMimeType: string): Promise<Buffer>;
+
   fromMimeType?: string;
   toMimeType?: string;
 }
@@ -429,6 +477,19 @@ export interface UltravioletSensor {
 export interface LuminanceSensor {
   luminance?: number;
 }
+export interface EventListener {
+  /**
+   * This device type can be hooked by Automation actions to handle events. The event source, event details (interface, time, property), and event data are all passed to the listener as arguments.
+   */
+  onEvent(eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object): void;
+
+}
+export interface EventDetails {
+  changed?: boolean;
+  eventInterface?: string;
+  eventTime?: number;
+  property?: string;
+}
 /**
  * Logger is exposed via log.* to allow writing to the Scrypted log.
  */
@@ -437,44 +498,54 @@ export interface Logger {
    * Alert. Alert level logs will be displayed as a notification in the management console.
    */
   a(msg: string): void;
+
   /**
    * Clear the log
    */
   clear(): void;
+
   /**
    * Clear a specific alert
    */
   clearAlert(msg: string): void;
+
   /**
    * Clear all alerts
    */
   clearAlerts(): void;
+
   /**
    * Debug
    */
   d(msg: string): void;
+
   /**
    * Error
    */
   e(msg: string): void;
+
   /**
    * Info
    */
   i(msg: string): void;
+
   /**
    * Verbose
    */
   v(msg: string): void;
+
   /**
    * Warn
    */
   w(msg: string): void;
+
 }
 export interface MediaSource {
   /**
    * Get a MediaObject that will be automatically converted for playback on other devices.
    */
   getMedia(): MediaObject;
+
 }
 export interface MessagingEndpoint {
 }
@@ -483,8 +554,11 @@ export interface MessagingEndpoint {
  */
 export interface Settings {
   getSetting(key: string): boolean|number|string;
+
   getSettings(): Setting[];
+
   putSetting(key: string, value: boolean|number|string): void;
+
 }
 export interface Setting {
   choices?: string[];
@@ -504,28 +578,34 @@ export interface OauthClient {
    * Get the Oauth URL to navigate to in the browser. The redirect_uri parameter is not needed and will be automatically set by Scrypted.
    */
   getOauthUrl(): string;
+
   /**
    * When an oauth request by a plugin completes, the callback url, with the code/token, will be passed to this method.
    */
   onOauthCallback(callbackUrl: string): void;
+
 }
 export interface MediaManager {
   /**
    * Convert a media object to a Buffer of the given mime type.
    */
   convertMediaObjectToBuffer(mediaObject: MediaObject, toMimeType: string): Promise<Buffer>;
+
   /**
    * Convert a media object to a publically accessible uri that serves a media file of the given mime type.
    */
   convertMediaObjectToUri(mediaObject: MediaObject, toMimeType: string): Promise<string>;
+
   /**
    * Create a MediaObject. The media will be created from the provided FFmpeg input arguments.
    */
   createFFmpegMediaObject(ffMpegInput: FFMpegInput): MediaObject;
+
   /**
    * Create a MediaObject. The mime type needs to be provided up front, but the data can be a Uri string, Buffer, or a Promise for a Uri string or Buffer.
    */
   createMediaObject(data: string|Buffer|Promise<string|Buffer>, mimeType: string): MediaObject;
+
 }
 export interface FFMpegInput {
   inputArguments?: string[];
@@ -538,39 +618,49 @@ export interface DeviceManager {
    * Get the logger for a device given a native id.
    */
   getDeviceLogger(nativeId: string): Logger;
+
   /**
    * Get the device state maintained by Scrypted. Setting properties on this state will update the state in Scrypted.
    */
   getDeviceState(): DeviceState;
+
   /**
    * Get the device state maintained by Scrypted. Setting properties on this state will update the state in Scrypted.
    */
   getDeviceState(nativeId: string): DeviceState;
+
   /**
    * Get the per script Storage object.
    */
   getDeviceStorage(): Storage;
+
   /**
    * Get the per device Storage object.
    */
   getDeviceStorage(nativeId: string): Storage;
+
   getNativeIds(): string[];
+
   /**
    * onDeviceDiscovered is used to report new devices that are trickle discovered, one by one, such as via a network broadcast.
    */
   onDeviceDiscovered(device: Device): void;
+
   /**
    * Fire an event for this plugin's device.
    */
   onDeviceEvent(eventInterface: string, eventData: any): void;
+
   /**
    * Fire an event for a device provided by this plugin.
    */
   onDeviceEvent(nativeId: string, eventInterface: string, eventData: any): void;
+
   /**
    * onDevicesChanged is used to sync Scrypted with devices that are attached to a hub, such as Hue or SmartThings. All the devices should be reported at once.
    */
   onDevicesChanged(devices: DeviceManifest): void;
+
 }
 /**
  * Device objects are created by DeviceProviders when new devices are discover and synced to Scrypted via the DeviceManager.
@@ -600,18 +690,22 @@ export interface EndpointManager {
    * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are without any encyption. Plugin implementation is responsible for authentication.
    */
   getInsecurePublicLocalEndpoint(): string;
+
   /**
    * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication.
    */
   getPublicCloudEndpoint(): Promise<string>;
+
   /**
    * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are over SSL with a self signed certificate. Plugin implementation is responsible for authentication.
    */
   getPublicLocalEndpoint(): string;
+
   /**
    * Get an URL that can be used to send a push message to the client. This differs from a cloud endpoint, in that, the Plugin does not send a response back. Plugin implementation is responsible for authentication.
    */
   getPublicPushEndpoint(): Promise<string>;
+
 }
 /**
  * SystemManager is used by scripts to query device state and access devices.
@@ -620,19 +714,28 @@ export interface SystemManager {
   /**
    * Find a Scrypted device by id.
    */
-  getDeviceById(id: string): ScryptedDevice;
+  getDeviceById(id: string): ScryptedDevice|null;
+
   /**
    * Find a Scrypted device by name.
    */
-  getDeviceByName(name: string): ScryptedDevice;
+  getDeviceByName(name: string): ScryptedDevice|null;
+
   /**
    * Get the current state of a device.
    */
   getDeviceState(id: string): object;
+
   /**
    * Get the current state of every device.
    */
   getSystemState(): object;
+
+  /**
+   * Passively listen to all events.
+   */
+  listen(callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+
 }
 /**
  * Android provides limited access to the Android system, to send Intents to other applications, such as Tasker. See Android SDK documentation for more information.
@@ -642,9 +745,13 @@ export interface Android {
    * Create a new Intent. Use one of the send methods to send broadcasts, start activities, or start services.
    */
   newIntent(): Intent;
+
   sendBroadcast(intent: Intent): void;
+
   startActivity(intent: Intent): void;
+
   startService(intent: Intent): void;
+
 }
 /**
  * The HttpRequestHandler allows handling of web requests under the endpoint path: /endpoint/npm-package-name/*.
@@ -654,10 +761,12 @@ export interface HttpRequestHandler {
    * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
    */
   getEndpoint(): string;
+
   /**
    * Callback to handle an incoming request.
    */
   onRequest(request: HttpRequest, response: HttpResponse): void;
+
 }
 export interface HttpRequest {
   body?: string;
@@ -672,41 +781,71 @@ export interface HttpRequest {
  */
 export interface HttpResponse {
   send(options: HttpResponseOptions, body: string): void;
+
   send(options: HttpResponseOptions, body: Buffer): void;
+
   send(body: string): void;
+
   send(body: Buffer): void;
+
   sendFile(options: HttpResponseOptions, path: string): void;
+
   sendFile(path: string): void;
+
 }
 export interface HttpResponseOptions {
   asContent?: boolean;
   code?: number;
   headers?: object;
 }
+export interface EngineIOHandler {
+  /**
+   * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
+   */
+  getEndpoint(): string;
+
+  onConnection(request: HttpRequest, webSocketUrl: string): void;
+
+}
 export interface PushHandler {
   /**
    * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
    */
   getEndpoint(): string;
+
   /**
    * Callback to handle an incoming push.
    */
   onPush(request: HttpRequest): void;
+
 }
 export interface ZwaveManager {
   getNodeManufacturerName(homeId: number, nodeId: number): string;
+
   getNodeName(homeId: number, nodeId: number): string;
+
   getNodeProductName(homeId: number, nodeId: number): string;
+
   getValue(valueId: ZwaveValueId): string;
+
   getValueHelp(valueId: ZwaveValueId): string;
+
   getValueLabel(valueId: ZwaveValueId): string;
+
   getValueListItems(valueId: ZwaveValueId): string[];
+
   getValueListValues(valueId: ZwaveValueId): number[];
+
   getValueUnit(valueId: ZwaveValueId): string;
+
   refreshValue(valueId: ZwaveValueId): void;
+
   setNodeName(homeId: number, nodeId: number, name: string): void;
+
   setValue(valueId: ZwaveValueId, value: string): void;
+
   setValueRaw(valueId: ZwaveValueId, value: Buffer): void;
+
 }
 export interface ZwaveValueId {
   commandClass?: number;
@@ -763,6 +902,10 @@ export class ScryptedDeviceBase implements DeviceState {
   log: Logger;
   storage: Storage;
   constructor(nativeId?: string);
+  interfaces?: string[];
+  name?: string;
+  room?: string;
+  type?: ScryptedDeviceType;
   on?: boolean;
   brightness?: number;
   colorTemperature?: number;
@@ -802,25 +945,77 @@ export class ScryptedDeviceBase implements DeviceState {
   luminance?: number;
 }
 
+export enum ScryptedInterface {
+  OnOff = "OnOff",
+  Brightness = "Brightness",
+  ColorSettingTemperature = "ColorSettingTemperature",
+  ColorSettingRgb = "ColorSettingRgb",
+  ColorSettingHsv = "ColorSettingHsv",
+  Notifier = "Notifier",
+  StartStop = "StartStop",
+  Dock = "Dock",
+  TemperatureSetting = "TemperatureSetting",
+  Thermometer = "Thermometer",
+  HumiditySensor = "HumiditySensor",
+  Camera = "Camera",
+  VideoCamera = "VideoCamera",
+  Lock = "Lock",
+  PasswordStore = "PasswordStore",
+  Authenticator = "Authenticator",
+  Scene = "Scene",
+  Entry = "Entry",
+  EntrySensor = "EntrySensor",
+  DeviceProvider = "DeviceProvider",
+  Alarm = "Alarm",
+  Battery = "Battery",
+  Refresh = "Refresh",
+  MediaPlayer = "MediaPlayer",
+  Online = "Online",
+  SoftwareUpdate = "SoftwareUpdate",
+  BufferConverter = "BufferConverter",
+  BinarySensor = "BinarySensor",
+  IntrusionSensor = "IntrusionSensor",
+  AudioSensor = "AudioSensor",
+  MotionSensor = "MotionSensor",
+  OccupancySensor = "OccupancySensor",
+  FloodSensor = "FloodSensor",
+  UltravioletSensor = "UltravioletSensor",
+  LuminanceSensor = "LuminanceSensor",
+  MediaSource = "MediaSource",
+  MessagingEndpoint = "MessagingEndpoint",
+  Settings = "Settings",
+  OauthClient = "OauthClient",
+  Android = "Android",
+  HttpRequestHandler = "HttpRequestHandler",
+  EngineIOHandler = "EngineIOHandler",
+  PushHandler = "PushHandler",
+}
+
 export interface ZwaveManagerDevice extends ZwaveManager, ScryptedDevice {
 }
+
 /**
  * Android Intent.
  * See: https://developer.android.com/reference/android/content/Intent
  */
 interface Intent {
-
 }
-export interface ScryptedStatic {
-    log: Logger,
-    scriptSettings: Settings,
 
-    android: Android,
-    deviceManager: DeviceManager,
-    endpointManager: EndpointManager,
-    mediaManager: MediaManager,
+declare const ScryptedInterfaceDescriptors: any;
+export {
+    ScryptedInterfaceDescriptors
+}
+
+export interface ScryptedStatic {
+    log?: Logger,
+    scriptSettings?: Settings,
+
+    android?: Android,
+    deviceManager?: DeviceManager,
+    endpointManager?: EndpointManager,
+    mediaManager?: MediaManager,
     systemManager: SystemManager,
-    zwaveManager: ZwaveManagerDevice,
+    zwaveManager?: ZwaveManagerDevice,
 }
 
 
