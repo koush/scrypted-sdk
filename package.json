@@ -26,6 +26,7 @@
     "axios": "^0.19.0",
     "babel-loader": "^8.0.4",
     "babel-polyfill": "^6.26.0",
+    "babel-template": "^6.26.0",
     "browserify-buffertools": "^1.0.2",
     "bytebuffer": "^5.0.1",
     "engine.io-client": "^3.3.2",

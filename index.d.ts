@@ -3,7 +3,9 @@
  * DeviceState is returned by DeviceManager.getDeviceState, and allows getting/setting of a device provided by a DeviceProvider.
  */
 export interface DeviceState {
+  component?: string;
   interfaces?: string[];
+  metadata?: any;
   name?: string;
   room?: string;
   type?: ScryptedDeviceType;
@@ -44,6 +46,7 @@ export interface DeviceState {
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
+  settings?: Setting[];
 }
 /**
  * All devices in Scrypted implement ScryptedDevice, which contains the id, name, and type. Add listeners to subscribe to events from that device.
@@ -60,8 +63,10 @@ export interface ScryptedDevice {
 
   setType(type: ScryptedDeviceType): void;
 
+  component?: string;
   id?: string;
   interfaces?: string[];
+  metadata?: any;
   name?: string;
   room?: string;
   type?: ScryptedDeviceType;
@@ -555,10 +560,9 @@ export interface MessagingEndpoint {
 export interface Settings {
   getSetting(key: string): boolean|number|string;
 
-  getSettings(): Setting[];
-
   putSetting(key: string, value: boolean|number|string): void;
 
+  settings?: Setting[];
 }
 export interface Setting {
   choices?: string[];
@@ -590,6 +594,11 @@ export interface MediaManager {
    * Convert a media object to a Buffer of the given mime type.
    */
   convertMediaObjectToBuffer(mediaObject: MediaObject, toMimeType: string): Promise<Buffer>;
+
+  /**
+   * Convert a media object to a locally accessible uri that serves a media file of the given mime type.
+   */
+  convertMediaObjectToLocalUri(mediaObject: MediaObject, toMimeType: string): Promise<string>;
 
   /**
    * Convert a media object to a publically accessible uri that serves a media file of the given mime type.
@@ -724,15 +733,15 @@ export interface SystemManager {
   /**
    * Get the current state of a device.
    */
-  getDeviceState(id: string): object;
+  getDeviceState(id: string): any;
 
   /**
    * Get the current state of every device.
    */
-  getSystemState(): object;
+  getSystemState(): any;
 
   /**
-   * Passively listen to all events.
+   * Passively (without polling) listen to property changed events.
    */
   listen(callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
 
@@ -902,7 +911,9 @@ export class ScryptedDeviceBase implements DeviceState {
   log: Logger;
   storage: Storage;
   constructor(nativeId?: string);
+  component?: string;
   interfaces?: string[];
+  metadata?: any;
   name?: string;
   room?: string;
   type?: ScryptedDeviceType;
@@ -943,6 +954,7 @@ export class ScryptedDeviceBase implements DeviceState {
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
+  settings?: Setting[];
 }
 
 export enum ScryptedInterface {

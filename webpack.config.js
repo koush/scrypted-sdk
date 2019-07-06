@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const InjectPlugin = require('webpack-inject-plugin').default;
 const webpack = require('webpack');
+const duk = require('./transform/generator');
 
 var out;
 const cwd = process.cwd();
@@ -34,6 +35,7 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         "plugins": [
+                            path.resolve(__dirname, "./transform/generator"),
                             "@babel/plugin-transform-typescript",
                             "@babel/plugin-proposal-class-properties",
                             "@babel/plugin-transform-modules-commonjs"
@@ -43,6 +45,7 @@ module.exports = {
                                 "@babel/preset-env",
                                 {
                                     "useBuiltIns": "usage",
+                                    "exclude": ["transform-regenerator"],
                                 },
                                 "@babel/typescript",
                             ],
@@ -97,6 +100,8 @@ module.exports = {
             buffer: path.resolve(__dirname, 'polyfill/buffer'),
             buffertools: path.resolve(__dirname, 'node_modules/browserify-buffertools'),
             'safe-buffer': path.resolve(__dirname, 'polyfill/safe-buffer'),
+
+            'duktape-yield': path.resolve(__dirname, 'transform/duktape-yield'),
         },
 
         extensions: ['.tsx', '.ts', '.js']
