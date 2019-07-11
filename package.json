@@ -29,6 +29,7 @@
     "babel-template": "^6.26.0",
     "browserify-buffertools": "^1.0.2",
     "bytebuffer": "^5.0.1",
+    "chalk": "^2.4.2",
     "engine.io-client": "^3.3.2",
     "event-target-shim": "^5.0.1",
     "events": "^3.0.0",

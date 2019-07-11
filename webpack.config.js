@@ -14,6 +14,8 @@ else {
     out = path.resolve(cwd, 'out');
 }
 
+const isProduction = process.env.NODE_ENV == 'production';
+
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
     output: {
@@ -45,6 +47,7 @@ module.exports = {
                                 "@babel/preset-env",
                                 {
                                     "useBuiltIns": "usage",
+                                    "corejs": "2",
                                     "exclude": ["transform-regenerator"],
                                 },
                                 "@babel/typescript",
@@ -133,8 +136,12 @@ module.exports = {
         // UPDATE: this may not be true. unable to determine cause. could be
         // some textarea copy paste behavior that occurred while I was testing.
         // minimize: false,
-        minimize: process.env.NODE_ENV == 'production',
+        minimize: isProduction,
     },
 
-    devtool: 'source-map'
+    // don't bother doing source maps in production:
+    // compressed code is on one line which can't be debugged by duktape anyways.
+    // see optimization comment above.
+    // this also reduces the package size.
+    devtool: isProduction ? 'none' : 'source-map',
 };

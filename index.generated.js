@@ -1,26 +1,26 @@
 class ScryptedDeviceBase {
     constructor(nativeId) {
-        this._nativeId = nativeId;
+        this.nativeId = nativeId;
     }
 
     get storage() {
         if (!this._storage) {
-            this._storage = deviceManager.getDeviceStorage(this._nativeId);
+            this._storage = deviceManager.getDeviceStorage(this.nativeId);
         }
         return this._storage;
     }
 
     get log() {
         if (!this._log) {
-            this._log = deviceManager.getDeviceLogger(this._nativeId);
+            this._log = deviceManager.getDeviceLogger(this.nativeId);
         }
         return this._log;
     }
 
     _lazyLoadDeviceState() {
         if (!this._deviceState) {
-            if (this._nativeId) {
-                this._deviceState = deviceManager.getDeviceState(this._nativeId);
+            if (this.nativeId) {
+                this._deviceState = deviceManager.getDeviceState(this.nativeId);
             }
             else {
                 this._deviceState = deviceManager.getDeviceState();
@@ -44,7 +44,7 @@ function _createSetState(state) {
     };
 }
 
-var fields = ["component","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","paused","running","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","passwords","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance","settings",
+var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","paused","running","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","passwords","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance",
 ];
 for (var field of fields) {
     Object.defineProperty(ScryptedDeviceBase.prototype, field, {
@@ -194,6 +194,7 @@ module.exports.ScryptedInterface = {
   OauthClient: "OauthClient",
   Android: "Android",
   HttpRequestHandler: "HttpRequestHandler",
+  EndpointHandler: "EndpointHandler",
   EngineIOHandler: "EngineIOHandler",
   PushHandler: "PushHandler",
 }
@@ -539,10 +540,10 @@ module.exports.ScryptedInterfaceDescriptors = {
   Settings: {
       name: "Settings",
       properties: [
-        "settings",
       ],
       methods: [
         "getSetting",
+        "getSettings",
         "putSetting",
       ]
   },
@@ -571,8 +572,15 @@ module.exports.ScryptedInterfaceDescriptors = {
       properties: [
       ],
       methods: [
-        "getEndpoint",
         "onRequest",
+      ]
+  },
+  EndpointHandler: {
+      name: "EndpointHandler",
+      properties: [
+      ],
+      methods: [
+        "getEndpoint",
       ]
   },
   EngineIOHandler: {
@@ -580,7 +588,6 @@ module.exports.ScryptedInterfaceDescriptors = {
       properties: [
       ],
       methods: [
-        "getEndpoint",
         "onConnection",
       ]
   },
@@ -589,7 +596,6 @@ module.exports.ScryptedInterfaceDescriptors = {
       properties: [
       ],
       methods: [
-        "getEndpoint",
         "onPush",
       ]
   },

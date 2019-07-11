@@ -1,21 +1,22 @@
 const https = require('https');
 const axios = require('axios').create({
-    httpsAgent: new https.Agent({  
+    httpsAgent: new https.Agent({
         rejectUnauthorized: false
     })
 });
 const process = require('process');
 const path = require('path');
 const fs = require('fs');
+const chalk = require('chalk');
 
-exports.deploy = function(debugHost, noRebind) {
+exports.deploy = function (debugHost, noRebind) {
     return new Promise((resolve, reject) => {
         var out;
         if (process.env.NODE_ENV == 'production')
             out = path.resolve(process.cwd(), 'dist');
         else
             out = path.resolve(process.cwd(), 'out');
-    
+
         const outFilename = 'plugin.zip';
         const main = path.resolve(out, outFilename);
         if (!fs.existsSync(main)) {
@@ -23,57 +24,65 @@ exports.deploy = function(debugHost, noRebind) {
             reject(new Error(`Missing webpack bundle: ${main}`));
             return 3;
         }
-    
-        const deployUrl = `https://${debugHost}:9443/web/component/script/deploy?${noRebind ? 'no-rebind' : ''}`
-        const setupUrl = `https://${debugHost}:9443/web/component/script/setup?${noRebind ? 'no-rebind' : ''}`
-    
-        const fileContents = fs.readFileSync(main);
-        console.log(`deploying to ${debugHost}`);
-    
+
         var packageJson = path.resolve(process.cwd(), 'package.json');
         packageJson = JSON.parse(fs.readFileSync(packageJson));
-        axios.post(setupUrl, packageJson,
-        {
-            timeout: 10000,
-            maxRedirects: 0,
-            validateStatus: function (status) {
-                return status >= 200 && status < 300;
-            },
-        })
-        .then(() => {
-            console.log(`configured ${debugHost}`);
+        const npmPackage = packageJson.name || '';
 
-            return axios.post(deployUrl, fileContents,
-                {
-                    timeout: 10000,
-                    maxRedirects: 0,
-                    validateStatus: function (status) {
-                        return status >= 200 && status < 300;
-                    },
-                    headers: {
-                        "Content-Type": "application/zip "
+        const deployUrl = `https://${debugHost}:9443/web/component/script/deploy?${noRebind ? 'no-rebind' : ''}&npmPackage=${npmPackage}`
+        const setupUrl = `https://${debugHost}:9443/web/component/script/setup?${noRebind ? 'no-rebind' : ''}&npmPackage=${npmPackage}`
+
+        const fileContents = fs.readFileSync(main);
+        console.log(`deploying to ${debugHost}`);
+
+        axios.post(setupUrl, packageJson,
+            {
+                timeout: 10000,
+                maxRedirects: 0,
+                validateStatus: function (status) {
+                    return status >= 200 && status < 300;
+                },
+            })
+            .then(() => {
+                console.log(`configured ${debugHost}`);
+
+                return axios.post(deployUrl, fileContents,
+                    {
+                        timeout: 10000,
+                        maxRedirects: 0,
+                        validateStatus: function (status) {
+                            return status >= 200 && status < 300;
+                        },
+                        headers: {
+                            "Content-Type": "application/zip "
+                        }
                     }
+                )
+            })
+            .then(() => {
+                console.log(`deployed to ${debugHost}`);
+                resolve();
+            })
+            .catch((err) => {
+                console.error(err.message);
+                if (err.response && err.response.data) {
+                    console.log(chalk.red(err.response.data));
                 }
-            )
-        })
-        .then(() => {
-            console.log(`deployed to ${debugHost}`);
-            resolve();
-        })
-        .catch((err) => {
-            console.error(err.message);
-            reject(err);
-        });
+                reject(err);
+            });
     });
 }
 
-exports.debug = function(debugHost) {
+exports.debug = function (debugHost) {
     return new Promise((resolve, reject) => {
         const outFilename = 'main.js';
+        var packageJson = path.resolve(process.cwd(), 'package.json');
+        packageJson = JSON.parse(fs.readFileSync(packageJson));
+        const npmPackage = packageJson.name || '';
 
-        const debugUrl = `https://${debugHost}:9443/web/component/script/debug?filename=${outFilename}`
+        const debugUrl = `https://${debugHost}:9443/web/component/script/debug?filename=${outFilename}&npmPackage=${npmPackage}`
         console.log(`initiating debugger on ${debugHost}`);
-    
+
         axios.post(debugUrl, {
             timeout: 10000,
             maxRedirects: 0,
@@ -81,17 +90,20 @@ exports.debug = function(debugHost) {
                 return status >= 200 && status < 300; // default
             },
         })
-        .then(response => {
-            console.log(`debugger ready on ${debugHost}`);
-            resolve();
-        })
-        .catch((err) => {
-            console.error(err.message);
-            reject(err);
-        });
+            .then(response => {
+                console.log(`debugger ready on ${debugHost}`);
+                resolve();
+            })
+            .catch((err) => {
+                console.error(err.message);
+                if (err.response && err.response.data) {
+                    console.log(chalk.red(err.response.data));
+                }
+                reject(err);
+            });
     })
 }
 
-exports.getDefaultWebpackConfig = function() {
+exports.getDefaultWebpackConfig = function () {
     return require(path.resolve(__dirname, '../webpack.config.js'));
 }

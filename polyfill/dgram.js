@@ -111,7 +111,9 @@ Udp.prototype.ensureSocket = function(address, port, cb) {
         this.socket = result;
         this.address = result.getLocalAddress().getHostAddress();
         this.port = result.getLocalPort();
-        cb();
+        if (cb) {
+            cb();
+        }
     }.bind(this),
     function closeCallback() {
         this.emit('close')

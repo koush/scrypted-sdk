@@ -4,6 +4,7 @@
  */
 export interface DeviceState {
   component?: string;
+  id?: string;
   interfaces?: string[];
   metadata?: any;
   name?: string;
@@ -46,7 +47,6 @@ export interface DeviceState {
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
-  settings?: Setting[];
 }
 /**
  * All devices in Scrypted implement ScryptedDevice, which contains the id, name, and type. Add listeners to subscribe to events from that device.
@@ -560,9 +560,10 @@ export interface MessagingEndpoint {
 export interface Settings {
   getSetting(key: string): boolean|number|string;
 
+  getSettings(): Setting[];
+
   putSetting(key: string, value: boolean|number|string): void;
 
-  settings?: Setting[];
 }
 export interface Setting {
   choices?: string[];
@@ -765,16 +766,18 @@ export interface Android {
 /**
  * The HttpRequestHandler allows handling of web requests under the endpoint path: /endpoint/npm-package-name/*.
  */
-export interface HttpRequestHandler {
-  /**
-   * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
-   */
-  getEndpoint(): string;
-
+export interface HttpRequestHandler extends EndpointHandler {
   /**
    * Callback to handle an incoming request.
    */
   onRequest(request: HttpRequest, response: HttpResponse): void;
+
+}
+export interface EndpointHandler {
+  /**
+   * Get the preferred endpoint of this HTTP/Push/EngineIO handler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
+   */
+  getEndpoint(): string;
 
 }
 export interface HttpRequest {
@@ -807,21 +810,11 @@ export interface HttpResponseOptions {
   code?: number;
   headers?: object;
 }
-export interface EngineIOHandler {
-  /**
-   * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
-   */
-  getEndpoint(): string;
-
+export interface EngineIOHandler extends EndpointHandler {
   onConnection(request: HttpRequest, webSocketUrl: string): void;
 
 }
-export interface PushHandler {
-  /**
-   * Get the preferred endpoint of this HttpRequestHandler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
-   */
-  getEndpoint(): string;
-
+export interface PushHandler extends EndpointHandler {
   /**
    * Callback to handle an incoming push.
    */
@@ -907,11 +900,12 @@ export enum ZwaveNotificationType {
 }
 
 export class ScryptedDeviceBase implements DeviceState {
-  _nativeId: string;
+  constructor(nativeId?: string);
+  nativeId: string;
   log: Logger;
   storage: Storage;
-  constructor(nativeId?: string);
   component?: string;
+  id?: string;
   interfaces?: string[];
   metadata?: any;
   name?: string;
@@ -954,7 +948,6 @@ export class ScryptedDeviceBase implements DeviceState {
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
-  settings?: Setting[];
 }
 
 export enum ScryptedInterface {
@@ -999,6 +992,7 @@ export enum ScryptedInterface {
   OauthClient = "OauthClient",
   Android = "Android",
   HttpRequestHandler = "HttpRequestHandler",
+  EndpointHandler = "EndpointHandler",
   EngineIOHandler = "EngineIOHandler",
   PushHandler = "PushHandler",
 }
