@@ -15,8 +15,8 @@ export interface DeviceState {
   colorTemperature?: number;
   rgb?: ColorRgb;
   hsv?: ColorHsv;
-  paused?: boolean;
   running?: boolean;
+  paused?: boolean;
   docked?: boolean;
   /**
    * Get the ambient temperature in Celsius.
@@ -33,7 +33,6 @@ export interface DeviceState {
   thermostatSetpointHigh?: number;
   thermostatSetpointLow?: number;
   lockState?: LockState;
-  passwords?: string[];
   entryOpen?: boolean;
   batteryLevel?: number;
   online?: boolean;
@@ -59,7 +58,7 @@ export interface ScryptedDevice {
 
   setName(name: string): void;
 
-  setRoom(arg0: string): void;
+  setRoom(room: string): void;
 
   setType(type: ScryptedDeviceType): void;
 
@@ -84,6 +83,19 @@ export interface EventListenerOptions {
    * This EventListener will passively watch for events, and not initiate polling.
    */
   watch?: boolean;
+}
+export interface EventListener {
+  /**
+   * This device type can be hooked by Automation actions to handle events. The event source, event details (interface, time, property), and event data are all passed to the listener as arguments.
+   */
+  onEvent(eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object): void;
+
+}
+export interface EventDetails {
+  changed?: boolean;
+  eventInterface?: string;
+  eventTime?: number;
+  property?: string;
 }
 /**
  * Returned when an event listener is attached to an EventEmitter. Call removeListener to unregister from events.
@@ -144,7 +156,7 @@ export interface ColorSettingTemperature {
 
   getTemperatureMinK(): number;
 
-  setTemperature(kelvin: number): void;
+  setColorTemperature(kelvin: number): void;
 
   colorTemperature?: number;
 }
@@ -210,18 +222,18 @@ export interface MediaObject {
  * StartStop represents a device that can be started, stopped, and possibly paused and resumed. Typically vacuum cleaners or washers.
  */
 export interface StartStop {
-  isPausable(): boolean;
-
-  pause(): void;
-
-  resume(): void;
-
   start(): void;
 
   stop(): void;
 
-  paused?: boolean;
   running?: boolean;
+}
+export interface Pause {
+  pause(): void;
+
+  resume(): void;
+
+  paused?: boolean;
 }
 /**
  * Dock instructs devices that have a base station or charger, to return to their home.
@@ -313,9 +325,10 @@ export enum LockState {
 export interface PasswordStore extends Authenticator {
   addPassword(password: string): void;
 
+  getPasswords(): string[];
+
   removePassword(password: string): void;
 
-  passwords?: string[];
 }
 /**
  * Authenticator can be used to require a password before allowing interaction with a security device.
@@ -365,25 +378,6 @@ export interface DeviceProvider {
   getDevice(nativeId: string): object;
 
 }
-export interface Alarm {
-  getClockType(): ClockType;
-
-  getHour(): number;
-
-  getMinute(): number;
-
-  isEnabled(day: number): boolean;
-
-}
-export enum ClockType {
-  AM = "AM",
-  PM = "PM",
-  TwentyFourHourClock = "TwentyFourHourClock",
-  BeforeSunrise = "BeforeSunrise",
-  AfterSunrise = "AfterSunrise",
-  BeforeSunset = "BeforeSunset",
-  AfterSunset = "AfterSunset",
-}
 /**
  * Battery retrieves the battery level of battery powered devices.
  */
@@ -430,14 +424,9 @@ export interface Online {
 }
 export interface Program {
   /**
-   * Synchronously run a script given the provided arguments.
-   */
-  run(args: object[]): object;
-
-  /**
    * Asynchronously run a script given the provided arguments.
    */
-  runAsync(args: object[]): Promise<object>;
+  run(args: object[]): Promise<object>;
 
 }
 /**
@@ -458,6 +447,25 @@ export interface BufferConverter {
 
   fromMimeType?: string;
   toMimeType?: string;
+}
+/**
+ * Settings viewing and editing of device configurations that describe or modify behavior.
+ */
+export interface Settings {
+  getSettings(): Setting[];
+
+  putSetting(key: string, value: boolean|number|string): void;
+
+}
+export interface Setting {
+  choices?: string[];
+  description?: string;
+  key?: string;
+  placeholder?: string;
+  readonly?: boolean;
+  title?: string;
+  type?: string;
+  value?: boolean|number|string;
 }
 export interface BinarySensor {
   binaryState?: boolean;
@@ -481,19 +489,6 @@ export interface UltravioletSensor {
 }
 export interface LuminanceSensor {
   luminance?: number;
-}
-export interface EventListener {
-  /**
-   * This device type can be hooked by Automation actions to handle events. The event source, event details (interface, time, property), and event data are all passed to the listener as arguments.
-   */
-  onEvent(eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object): void;
-
-}
-export interface EventDetails {
-  changed?: boolean;
-  eventInterface?: string;
-  eventTime?: number;
-  property?: string;
 }
 /**
  * Logger is exposed via log.* to allow writing to the Scrypted log.
@@ -555,27 +550,6 @@ export interface MediaSource {
 export interface MessagingEndpoint {
 }
 /**
- * Settings viewing and editing of device configurations that describe or modify behavior.
- */
-export interface Settings {
-  getSetting(key: string): boolean|number|string;
-
-  getSettings(): Setting[];
-
-  putSetting(key: string, value: boolean|number|string): void;
-
-}
-export interface Setting {
-  choices?: string[];
-  description?: string;
-  key?: string;
-  placeholder?: string;
-  readonly?: boolean;
-  title?: string;
-  type?: string;
-  value?: boolean|number|string;
-}
-/**
  * The OauthClient can be implemented to perform the browser based Oauth process from within a plugin.
  */
 export interface OauthClient {
@@ -597,14 +571,14 @@ export interface MediaManager {
   convertMediaObjectToBuffer(mediaObject: MediaObject, toMimeType: string): Promise<Buffer>;
 
   /**
-   * Convert a media object to a locally accessible uri that serves a media file of the given mime type.
+   * Convert a media object to a locally accessible URL that serves a media file of the given mime type. If the media object is an externally accessible URL, that will be returned.
    */
-  convertMediaObjectToLocalUri(mediaObject: MediaObject, toMimeType: string): Promise<string>;
+  convertMediaObjectToLocalUrl(mediaObject: MediaObject, toMimeType: string): Promise<string>;
 
   /**
-   * Convert a media object to a publically accessible uri that serves a media file of the given mime type.
+   * Convert a media object to a publically accessible URL that serves a media file of the given mime type.
    */
-  convertMediaObjectToUri(mediaObject: MediaObject, toMimeType: string): Promise<string>;
+  convertMediaObjectToUrl(mediaObject: MediaObject, toMimeType: string): Promise<string>;
 
   /**
    * Create a MediaObject. The media will be created from the provided FFmpeg input arguments.
@@ -612,7 +586,7 @@ export interface MediaManager {
   createFFmpegMediaObject(ffMpegInput: FFMpegInput): MediaObject;
 
   /**
-   * Create a MediaObject. The mime type needs to be provided up front, but the data can be a Uri string, Buffer, or a Promise for a Uri string or Buffer.
+   * Create a MediaObject. The mime type needs to be provided up front, but the data can be a URL string, Buffer, or a Promise for a URL string or Buffer.
    */
   createMediaObject(data: string|Buffer|Promise<string|Buffer>, mimeType: string): MediaObject;
 
@@ -697,9 +671,14 @@ export interface DeviceManifest {
  */
 export interface EndpointManager {
   /**
-   * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are without any encyption. Plugin implementation is responsible for authentication.
+   * Get an URL pathname that can be accessed on your local network or cloud while authenticated. This is an absolute path that requires cookie authentication, and generally used only in browser contexts.
    */
-  getInsecurePublicLocalEndpoint(): string;
+  getAuthenticatedPath(): Promise<string>;
+
+  /**
+   * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are without any encryption. Plugin implementation is responsible for authentication.
+   */
+  getInsecurePublicLocalEndpoint(): Promise<string>;
 
   /**
    * Get an URL that can be externally accessed by anyone with the link. Plugin implementation is responsible for authentication.
@@ -709,7 +688,7 @@ export interface EndpointManager {
   /**
    * Get an URL that can only be accessed on your local network by anyone with the link. HTTP requests and responses are over SSL with a self signed certificate. Plugin implementation is responsible for authentication.
    */
-  getPublicLocalEndpoint(): string;
+  getPublicLocalEndpoint(): Promise<string>;
 
   /**
    * Get an URL that can be used to send a push message to the client. This differs from a cloud endpoint, in that, the Plugin does not send a response back. Plugin implementation is responsible for authentication.
@@ -744,7 +723,7 @@ export interface SystemManager {
   /**
    * Passively (without polling) listen to property changed events.
    */
-  listen(callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+  listen(EventListener: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
 
 }
 /**
@@ -806,7 +785,6 @@ export interface HttpResponse {
 
 }
 export interface HttpResponseOptions {
-  asContent?: boolean;
   code?: number;
   headers?: object;
 }
@@ -916,8 +894,8 @@ export class ScryptedDeviceBase implements DeviceState {
   colorTemperature?: number;
   rgb?: ColorRgb;
   hsv?: ColorHsv;
-  paused?: boolean;
   running?: boolean;
+  paused?: boolean;
   docked?: boolean;
   /**
    * Get the ambient temperature in Celsius.
@@ -934,7 +912,6 @@ export class ScryptedDeviceBase implements DeviceState {
   thermostatSetpointHigh?: number;
   thermostatSetpointLow?: number;
   lockState?: LockState;
-  passwords?: string[];
   entryOpen?: boolean;
   batteryLevel?: number;
   online?: boolean;
@@ -958,6 +935,7 @@ export enum ScryptedInterface {
   ColorSettingHsv = "ColorSettingHsv",
   Notifier = "Notifier",
   StartStop = "StartStop",
+  Pause = "Pause",
   Dock = "Dock",
   TemperatureSetting = "TemperatureSetting",
   Thermometer = "Thermometer",
@@ -971,13 +949,13 @@ export enum ScryptedInterface {
   Entry = "Entry",
   EntrySensor = "EntrySensor",
   DeviceProvider = "DeviceProvider",
-  Alarm = "Alarm",
   Battery = "Battery",
   Refresh = "Refresh",
   MediaPlayer = "MediaPlayer",
   Online = "Online",
   SoftwareUpdate = "SoftwareUpdate",
   BufferConverter = "BufferConverter",
+  Settings = "Settings",
   BinarySensor = "BinarySensor",
   IntrusionSensor = "IntrusionSensor",
   AudioSensor = "AudioSensor",
@@ -988,7 +966,6 @@ export enum ScryptedInterface {
   LuminanceSensor = "LuminanceSensor",
   MediaSource = "MediaSource",
   MessagingEndpoint = "MessagingEndpoint",
-  Settings = "Settings",
   OauthClient = "OauthClient",
   Android = "Android",
   HttpRequestHandler = "HttpRequestHandler",

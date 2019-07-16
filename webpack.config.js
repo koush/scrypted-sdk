@@ -40,7 +40,13 @@ module.exports = {
                             path.resolve(__dirname, "./transform/generator"),
                             "@babel/plugin-transform-typescript",
                             "@babel/plugin-proposal-class-properties",
-                            "@babel/plugin-transform-modules-commonjs"
+                            "@babel/plugin-transform-modules-commonjs",
+                            [
+                                "@babel/plugin-transform-arrow-functions",
+                                {
+                                    // spec: true,
+                                },
+                            ],
                         ],
                         "presets": [
                             [

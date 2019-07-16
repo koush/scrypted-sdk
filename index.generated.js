@@ -44,7 +44,7 @@ function _createSetState(state) {
     };
 }
 
-var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","paused","running","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","passwords","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance",
+var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance",
 ];
 for (var field of fields) {
     Object.defineProperty(ScryptedDeviceBase.prototype, field, {
@@ -108,15 +108,6 @@ module.exports.LockState = {
   Unlocked: "Unlocked",
   Jammed: "Jammed",
 }
-module.exports.ClockType = {
-  AM: "AM",
-  PM: "PM",
-  TwentyFourHourClock: "TwentyFourHourClock",
-  BeforeSunrise: "BeforeSunrise",
-  AfterSunrise: "AfterSunrise",
-  BeforeSunset: "BeforeSunset",
-  AfterSunset: "AfterSunset",
-}
 module.exports.ZwaveNotificationType = {
   Type_ValueAdded: "Type_ValueAdded",
   Type_ValueRemoved: "Type_ValueRemoved",
@@ -160,6 +151,7 @@ module.exports.ScryptedInterface = {
   ColorSettingHsv: "ColorSettingHsv",
   Notifier: "Notifier",
   StartStop: "StartStop",
+  Pause: "Pause",
   Dock: "Dock",
   TemperatureSetting: "TemperatureSetting",
   Thermometer: "Thermometer",
@@ -173,13 +165,13 @@ module.exports.ScryptedInterface = {
   Entry: "Entry",
   EntrySensor: "EntrySensor",
   DeviceProvider: "DeviceProvider",
-  Alarm: "Alarm",
   Battery: "Battery",
   Refresh: "Refresh",
   MediaPlayer: "MediaPlayer",
   Online: "Online",
   SoftwareUpdate: "SoftwareUpdate",
   BufferConverter: "BufferConverter",
+  Settings: "Settings",
   BinarySensor: "BinarySensor",
   IntrusionSensor: "IntrusionSensor",
   AudioSensor: "AudioSensor",
@@ -190,7 +182,6 @@ module.exports.ScryptedInterface = {
   LuminanceSensor: "LuminanceSensor",
   MediaSource: "MediaSource",
   MessagingEndpoint: "MessagingEndpoint",
-  Settings: "Settings",
   OauthClient: "OauthClient",
   Android: "Android",
   HttpRequestHandler: "HttpRequestHandler",
@@ -227,7 +218,7 @@ module.exports.ScryptedInterfaceDescriptors = {
       methods: [
         "getTemperatureMaxK",
         "getTemperatureMinK",
-        "setTemperature",
+        "setColorTemperature",
       ]
   },
   ColorSettingRgb: {
@@ -259,15 +250,21 @@ module.exports.ScryptedInterfaceDescriptors = {
   StartStop: {
       name: "StartStop",
       properties: [
-        "paused",
         "running",
       ],
       methods: [
-        "isPausable",
-        "pause",
-        "resume",
         "start",
         "stop",
+      ]
+  },
+  Pause: {
+      name: "Pause",
+      properties: [
+        "paused",
+      ],
+      methods: [
+        "pause",
+        "resume",
       ]
   },
   Dock: {
@@ -341,10 +338,10 @@ module.exports.ScryptedInterfaceDescriptors = {
   PasswordStore: {
       name: "PasswordStore",
       properties: [
-        "passwords",
       ],
       methods: [
         "addPassword",
+        "getPasswords",
         "removePassword",
       ]
   },
@@ -390,17 +387,6 @@ module.exports.ScryptedInterfaceDescriptors = {
       methods: [
         "discoverDevices",
         "getDevice",
-      ]
-  },
-  Alarm: {
-      name: "Alarm",
-      properties: [
-      ],
-      methods: [
-        "getClockType",
-        "getHour",
-        "getMinute",
-        "isEnabled",
       ]
   },
   Battery: {
@@ -457,6 +443,15 @@ module.exports.ScryptedInterfaceDescriptors = {
       ],
       methods: [
         "convert",
+      ]
+  },
+  Settings: {
+      name: "Settings",
+      properties: [
+      ],
+      methods: [
+        "getSettings",
+        "putSetting",
       ]
   },
   BinarySensor: {
@@ -535,16 +530,6 @@ module.exports.ScryptedInterfaceDescriptors = {
       properties: [
       ],
       methods: [
-      ]
-  },
-  Settings: {
-      name: "Settings",
-      properties: [
-      ],
-      methods: [
-        "getSetting",
-        "getSettings",
-        "putSetting",
       ]
   },
   OauthClient: {
