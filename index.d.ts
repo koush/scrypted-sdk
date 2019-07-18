@@ -368,7 +368,7 @@ export interface EntrySensor {
  */
 export interface DeviceProvider {
   /**
-   * Initiate device discovery for the specified duration.
+   * Perform device discovery for the specified duration in seconds.
    */
   discoverDevices(duration: number): void;
 
