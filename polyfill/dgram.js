@@ -31,12 +31,11 @@ Udp.prototype.bind = function() {
         if (type == 'function') {
             cb = arguments[1];
         }
-        else if (type == 'string') {
-            address = arguments[1];
-            cb = arguments[2];
-        }
         else {
-            throw new Error('unexpected argument');
+            address = arguments[1];
+            if (arguments.length >= 2) {
+                cb = arguments[2];
+            }
         }
     }
     else if (type == 'object') {
@@ -72,19 +71,15 @@ Udp.prototype.send = function() {
     var port;
     var address;
     var cb;
-    if (typeof arguments[i] == 'number') {
+    if (typeof arguments[i] == 'number' && typeof arguments[i + 1] == 'number') {
         offset = arguments[i++];
-    }
-    if (typeof arguments[i] == 'number') {
         length = arguments[i++];
     }
     port = arguments[i++];
     if (typeof arguments[i] == 'string') {
         address = arguments[i++]
     }
-    if (i < arguments.length) {
-        cb = arguments[i++];
-    }
+    cb = arguments[i++];
 
     return __datagramSend(this.socket, new Uint8Array(message), offset, length, port, address, cb);
 }

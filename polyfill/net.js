@@ -12,7 +12,7 @@ function Socket() {
 inherits(Socket, DuplexSocket);
 
 Socket.prototype.connect = function () {
-    var options;
+    var options = {};
     var callback;
 
     if (typeof arguments[0] == 'number') {
