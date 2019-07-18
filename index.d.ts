@@ -54,7 +54,7 @@ export interface ScryptedDevice {
   /**
    * Subscribe to events from a specific interface on a device, such as 'OnOff' or 'Brightness'.
    */
-  listen(event: ScryptedInterface|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+  listen(event: ScryptedInterface|string|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
 
   setName(name: string): void;
 
@@ -78,7 +78,7 @@ export interface EventListenerOptions {
   /**
    * The EventListener will subscribe to this event interface.
    */
-  event?: ScryptedInterface;
+  event?: ScryptedInterface|string;
   /**
    * This EventListener will passively watch for events, and not initiate polling.
    */

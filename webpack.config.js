@@ -44,7 +44,7 @@ module.exports = {
                             [
                                 "@babel/plugin-transform-arrow-functions",
                                 {
-                                    // spec: true,
+                                    spec: true,
                                 },
                             ],
                         ],
