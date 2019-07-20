@@ -1,7 +1,7 @@
 var mediaManagerApply = function(target, prop, argumentsList) {
     var ret = mediaManager[prop].apply(mediaManager, argumentsList);
     var p = global['Promise'];
-    if (!p || (prop != 'convertMediaObjectToUri' && prop != 'convertMediaObjectToBuffer')) {
+    if (!p || (!prop.startsWith('convert'))) {
         return ret;
     }
     // convert the promise to the globally available Promise.
