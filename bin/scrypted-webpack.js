@@ -5,6 +5,7 @@ const fs = require('fs');
 const spawn = require('child_process').spawn;
 const cwd = process.cwd();
 const AdmZip = require('adm-zip');
+const os = require('os');
 
 var entry;
 for (var search of ['src/main.js', 'src/main.ts']) {
@@ -36,7 +37,12 @@ if (!entry) {
 }
 
 // Notice how your arguments are in an array of strings
-var child = spawn(path.resolve(cwd, 'node_modules/.bin/webpack-cli'), [
+var webpackCmd = path.resolve(cwd, 'node_modules/.bin/webpack-cli');
+if (os.platform().startsWith('win')) {
+    webpackCmd += '.cmd';
+}
+
+var child = spawn(webpackCmd, [
     // "--json",
     '--config',
     webpackConfig,
