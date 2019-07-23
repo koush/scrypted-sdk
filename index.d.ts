@@ -46,6 +46,7 @@ export interface DeviceState {
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
+  position?: Position;
 }
 /**
  * All devices in Scrypted implement ScryptedDevice, which contains the id, name, and type. Add listeners to subscribe to events from that device.
@@ -465,7 +466,7 @@ export interface Setting {
   readonly?: boolean;
   title?: string;
   type?: string;
-  value?: boolean|number|string;
+  value?: string;
 }
 export interface BinarySensor {
   binaryState?: boolean;
@@ -489,6 +490,17 @@ export interface UltravioletSensor {
 }
 export interface LuminanceSensor {
   luminance?: number;
+}
+export interface PositionSensor {
+  position?: Position;
+}
+export interface Position {
+  /**
+   * The accuracy radius of this position in meters.
+   */
+  accuracyRadius?: number;
+  latitude?: number;
+  longitude?: number;
 }
 /**
  * Logger is exposed via log.* to allow writing to the Scrypted log.
@@ -925,6 +937,7 @@ export class ScryptedDeviceBase implements DeviceState {
   flooded?: boolean;
   ultraviolet?: number;
   luminance?: number;
+  position?: Position;
 }
 
 export enum ScryptedInterface {
@@ -964,6 +977,7 @@ export enum ScryptedInterface {
   FloodSensor = "FloodSensor",
   UltravioletSensor = "UltravioletSensor",
   LuminanceSensor = "LuminanceSensor",
+  PositionSensor = "PositionSensor",
   MediaSource = "MediaSource",
   MessagingEndpoint = "MessagingEndpoint",
   OauthClient = "OauthClient",

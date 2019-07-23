@@ -44,7 +44,7 @@ function _createSetState(state) {
     };
 }
 
-var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance",
+var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
 ];
 for (var field of fields) {
     Object.defineProperty(ScryptedDeviceBase.prototype, field, {
@@ -180,6 +180,7 @@ module.exports.ScryptedInterface = {
   FloodSensor: "FloodSensor",
   UltravioletSensor: "UltravioletSensor",
   LuminanceSensor: "LuminanceSensor",
+  PositionSensor: "PositionSensor",
   MediaSource: "MediaSource",
   MessagingEndpoint: "MessagingEndpoint",
   OauthClient: "OauthClient",
@@ -513,6 +514,14 @@ module.exports.ScryptedInterfaceDescriptors = {
       name: "LuminanceSensor",
       properties: [
         "luminance",
+      ],
+      methods: [
+      ]
+  },
+  PositionSensor: {
+      name: "PositionSensor",
+      properties: [
+        "position",
       ],
       methods: [
       ]
