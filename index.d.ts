@@ -778,6 +778,7 @@ export interface HttpRequest {
   method?: string;
   rootPath?: string;
   url?: string;
+  username?: string;
 }
 /**
  * Response object provided by the HttpRequestHandler.
