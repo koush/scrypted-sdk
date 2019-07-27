@@ -403,15 +403,27 @@ export interface Refresh {
 /**
  * MediaPlayer allows media playback on screen or speaker devices, such as Chromecasts or TVs.
  */
-export interface MediaPlayer {
+export interface MediaPlayer extends StartStop, Pause {
+  getMediaStatus(): MediaStatus;
+
   load(media: URL|MediaObject, options: MediaPlayerOptions): void;
 
-  pause(): void;
+  seek(milliseconds: number): void;
 
-  play(): void;
-
-  stop(): void;
-
+}
+export interface MediaStatus {
+  duration?: number;
+  mediaPlayerState?: MediaPlayerState;
+  metadata?: any;
+  position?: number;
+}
+export enum MediaPlayerState {
+  Off = "Off",
+  Idle = "Idle",
+  Loading = "Loading",
+  Playing = "Playing",
+  Paused = "Paused",
+  Buffering = "Buffering",
 }
 export interface MediaPlayerOptions {
   autoplay?: boolean;

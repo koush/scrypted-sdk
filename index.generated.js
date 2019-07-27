@@ -108,6 +108,14 @@ module.exports.LockState = {
   Unlocked: "Unlocked",
   Jammed: "Jammed",
 }
+module.exports.MediaPlayerState = {
+  Off: "Off",
+  Idle: "Idle",
+  Loading: "Loading",
+  Playing: "Playing",
+  Paused: "Paused",
+  Buffering: "Buffering",
+}
 module.exports.ZwaveNotificationType = {
   Type_ValueAdded: "Type_ValueAdded",
   Type_ValueRemoved: "Type_ValueRemoved",
@@ -412,10 +420,9 @@ module.exports.ScryptedInterfaceDescriptors = {
       properties: [
       ],
       methods: [
+        "getMediaStatus",
         "load",
-        "pause",
-        "play",
-        "stop",
+        "seek",
       ]
   },
   Online: {
