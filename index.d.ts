@@ -408,11 +408,11 @@ export interface MediaPlayer extends StartStop, Pause {
 
   load(media: URL|MediaObject, options: MediaPlayerOptions): void;
 
-  nextTrack(): void;
-
-  previousTrack(): void;
-
   seek(milliseconds: number): void;
+
+  skipNext(): void;
+
+  skipPrevious(): void;
 
 }
 export interface MediaStatus {
