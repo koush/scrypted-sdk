@@ -747,6 +747,11 @@ export interface SystemManager {
    */
   listen(EventListener: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
 
+  /**
+   * Subscribe to events from a specific interface on a device id, such as 'OnOff' or 'Brightness'. This is a convenience method for ScryptedDevice.listen.
+   */
+  listen(id: string, event: ScryptedInterface|string|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+
 }
 /**
  * Android provides limited access to the Android system, to send Intents to other applications, such as Tasker. See Android SDK documentation for more information.
