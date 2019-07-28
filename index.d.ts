@@ -677,6 +677,7 @@ export interface DeviceManager {
  */
 export interface Device {
   interfaces?: string[];
+  metadata?: any;
   model?: string;
   name?: string;
   /**
