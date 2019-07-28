@@ -750,7 +750,7 @@ export interface SystemManager {
   /**
    * Subscribe to events from a specific interface on a device id, such as 'OnOff' or 'Brightness'. This is a convenience method for ScryptedDevice.listen.
    */
-  listen(id: string, event: ScryptedInterface|string|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
+  listenDevice(id: string, event: ScryptedInterface|string|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: object) => void): EventListenerRegister;
 
 }
 /**
