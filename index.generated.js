@@ -420,6 +420,8 @@ module.exports.ScryptedInterfaceDescriptors = {
       methods: [
         "getMediaStatus",
         "load",
+        "nextTrack",
+        "previousTrack",
         "seek",
       ]
   },
