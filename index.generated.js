@@ -109,9 +109,7 @@ module.exports.LockState = {
   Jammed: "Jammed",
 }
 module.exports.MediaPlayerState = {
-  Off: "Off",
   Idle: "Idle",
-  Loading: "Loading",
   Playing: "Playing",
   Paused: "Paused",
   Buffering: "Buffering",
