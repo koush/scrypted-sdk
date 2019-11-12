@@ -29,8 +29,10 @@ exports.deploy = function (debugHost, noRebind) {
         packageJson = JSON.parse(fs.readFileSync(packageJson));
         const npmPackage = packageJson.name || '';
 
-        const deployUrl = `https://${debugHost}:9443/web/component/script/deploy?${noRebind ? 'no-rebind' : ''}&npmPackage=${npmPackage}`
-        const setupUrl = `https://${debugHost}:9443/web/component/script/setup?${noRebind ? 'no-rebind' : ''}&npmPackage=${npmPackage}`
+        var rebindQuery = noRebind ? 'no-rebind' : '';
+
+        const deployUrl = `https://${debugHost}:9443/web/component/script/deploy?${rebindQuery}&npmPackage=${npmPackage}`
+        const setupUrl = `https://${debugHost}:9443/web/component/script/setup?${rebindQuery}&npmPackage=${npmPackage}`
 
         const fileContents = fs.readFileSync(main);
         console.log(`deploying to ${debugHost}`);
@@ -73,9 +75,9 @@ exports.deploy = function (debugHost, noRebind) {
     });
 }
 
-exports.debug = function (debugHost) {
+exports.debug = function (debugHost, entryPoint) {
     return new Promise((resolve, reject) => {
-        const outFilename = 'main.js';
+        const outFilename = entryPoint || 'main.js';
         var packageJson = path.resolve(process.cwd(), 'package.json');
         packageJson = JSON.parse(fs.readFileSync(packageJson));
         const npmPackage = packageJson.name || '';
