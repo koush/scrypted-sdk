@@ -81,7 +81,18 @@ Udp.prototype.send = function() {
     }
     cb = arguments[i++];
 
-    return __datagramSend(this.socket, new Uint8Array(message), offset, length, port, address, cb);
+    var ui = new Uint8Array(message)
+    if (cb != null) {
+        var wrappedCb = cb;
+        cb = function(err) {
+            if (!err)
+                wrappedCb(null, ui.length)
+            else
+                wrappedCb(err)
+        }
+    }
+
+    return __datagramSend(this.socket, ui, offset, length, port, address, cb);
 }
 
 Udp.prototype.address = function() {
