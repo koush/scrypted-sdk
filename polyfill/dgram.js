@@ -3,7 +3,7 @@ import { inherits } from 'util';
 
 function Udp(family) {
     EventEmitter.call(this);
-    this.family = family;
+    this.family = family.type || family;
 }
 
 inherits(Udp, EventEmitter);
