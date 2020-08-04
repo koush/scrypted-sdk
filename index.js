@@ -1,12 +1,19 @@
 var mediaManagerApply = function(target, prop, argumentsList) {
-    var ret = mediaManager[prop].apply(mediaManager, argumentsList);
+    var copy = [];
+    if (argumentsList) {
+        for (var i in argumentsList) {
+            copy.push(NativeBuffer.from(argumentsList[i]));
+        }
+    }
+    var ret = mediaManager[prop].apply(mediaManager, copy);
     var p = global['Promise'];
     if (!p || (!prop.startsWith('convert'))) {
         return ret;
     }
     // convert the promise to the globally available Promise.
     return new p((resolve, reject) => {
-        ret.then(r => resolve(r))
+        // todo: dont use native buffer as a return value
+        ret.then(r => NativeBuffer.toBuffer(resolve(r)))
         .catch(e => reject(e));
     });
 };

@@ -1,6 +1,12 @@
 global.crypto = {
     getRandomValues: function (buf) {
-        __getRandomValues(buf);
+        log.i(buf.constructor.name);
+        __getRandomValues(NativeBuffer.from(buf));
+    },
+    subtle: {
+        digest: function(algorithm, data) {
+            return __cryptoSubtleDigest(algorithm.name, data);
+        }
     }
 };
 

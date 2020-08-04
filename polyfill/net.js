@@ -1,10 +1,6 @@
 import { inherits } from 'util';
 import { DuplexSocket } from '../lib/duplex-socket';
 
-Buffer.alloc = function (len) {
-    return new Buffer(len);
-}
-
 function Socket() {
     DuplexSocket.call(this, {});
     this.__type = "tcp";
@@ -48,10 +44,6 @@ Socket.prototype.connect = function () {
                 this.emit('error', new Error(e.getMessage()));
                 return;
             }
-            // read may be called before socket has connected.
-            if (!this._reading) {
-                socket.pause();
-            }
             this._socket = socket;
             this._writer = writer;
 
@@ -73,21 +65,14 @@ Socket.prototype.connect = function () {
         this._writable.bind(this));
 }
 
-Socket.prototype._read = function (len) {
-    this._reading = len;
-    // read may be called before socket has connected.
-    if (!this._socket) {
-        return;
-    }
-    setImmediate(function() {
-        this._socket.resume();
-    }.bind(this))
-}
-
+// MORNING KOUSH: buffer is native to duktape, but not quickjs.
+// so marshalling here is boned.
+// possible fixes:
+// 1 different per polyfill per engine.
+// 2 probe for buffer in qjs.
 Socket.prototype._write = function (b, encoding, callback) {
-    if (!Buffer.isBuffer(b)) {
-        b = new Buffer(b);
-    }
+    b = NativeBuffer.from(b);;
+
     // write may be called before socket has connected.
     if (!this._socket) {
         this._pendingWrite = b;

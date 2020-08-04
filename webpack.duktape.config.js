@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const InjectPlugin = require('webpack-inject-plugin').default;
 const webpack = require('webpack');
-const duk = require('./transform/generator');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var out;
 const cwd = process.cwd();
@@ -106,9 +106,9 @@ module.exports = {
             tls: path.resolve(__dirname, 'polyfill/tls'),
             fs: path.resolve(__dirname, 'polyfill/fs'),
             mdns: path.resolve(__dirname, 'polyfill/mdns'),
-            buffer: path.resolve(__dirname, 'polyfill/buffer'),
+            buffer: path.resolve(__dirname, 'polyfill/duktape/buffer'),
             buffertools: path.resolve(__dirname, 'node_modules/browserify-buffertools'),
-            'safe-buffer': path.resolve(__dirname, 'polyfill/safe-buffer'),
+            'safe-buffer': path.resolve(__dirname, 'polyfill/duktape/safe-buffer'),
 
             'duktape-yield': path.resolve(__dirname, 'transform/duktape-yield'),
         },
@@ -121,9 +121,10 @@ module.exports = {
     },
 
     plugins: [
+        new CleanWebpackPlugin(),
         new InjectPlugin(function () {
             return ''
-            + fs.readFileSync(path.resolve(__dirname, 'inject/buffer.js'))
+            + fs.readFileSync(path.resolve(__dirname, 'inject/duktape/buffer.js'))
             + fs.readFileSync(path.resolve(__dirname, 'inject/xmlhttprequest.js'))
             + fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'))
             ;

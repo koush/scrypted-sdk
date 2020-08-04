@@ -102,4 +102,7 @@ async function pack() {
     zip.writeZip(path.join(out, 'plugin.zip'));
 }
 
-pack();
+pack()
+.catch(e => process.nextTick(() => {
+    throw new Error(e);
+}));

@@ -1,6 +1,6 @@
 {
   "name": "@scrypted/sdk",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -45,5 +45,8 @@
     "webpack-cli": "^3.1.2",
     "webpack-inject-plugin": "^1.0.2"
   },
-  "types": "./index.d.ts"
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0"
+  }
 }

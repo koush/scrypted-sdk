@@ -77,7 +77,7 @@ exports.deploy = function (debugHost, noRebind) {
 
 exports.debug = function (debugHost, entryPoint) {
     return new Promise((resolve, reject) => {
-        const outFilename = entryPoint || 'main.js';
+        const outFilename = entryPoint || 'main.quickjs.js';
         var packageJson = path.resolve(process.cwd(), 'package.json');
         packageJson = JSON.parse(fs.readFileSync(packageJson));
         const npmPackage = packageJson.name || '';

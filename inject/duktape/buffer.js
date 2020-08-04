@@ -112,3 +112,15 @@ Buffer.from = function() {
 Buffer.byteLength = function(str, encoding) {
     return Buffer.from(str, encoding).byteLength;
 }
+
+var NativeBuffer = {
+    from: function(buffer) {
+        // no op.
+        return buffer;
+    },
+    toBuffer: function(buffer) {
+        return buffer;
+    }
+};
+
+global.NativeBuffer = NativeBuffer;
