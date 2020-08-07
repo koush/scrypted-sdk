@@ -1,6 +1,6 @@
 {
   "name": "@scrypted/sdk",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,7 @@
     "browserify-buffertools": "^1.0.2",
     "bytebuffer": "^5.0.1",
     "chalk": "^2.4.2",
+    "clean-webpack-plugin": "^3.0.0",
     "engine.io-client": "^3.3.2",
     "event-target-shim": "^5.0.1",
     "events": "^3.0.0",
@@ -45,8 +46,5 @@
     "webpack-cli": "^3.1.2",
     "webpack-inject-plugin": "^1.0.2"
   },
-  "types": "./index.d.ts",
-  "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0"
-  }
+  "types": "./index.d.ts"
 }
