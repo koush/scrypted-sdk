@@ -40,6 +40,7 @@ module.exports = {
                             // path.resolve(__dirname, "./transform/generator"),
                             "@babel/plugin-transform-typescript",
                             "@babel/plugin-proposal-class-properties",
+                            // currently still necessary due to how Quack evaluates expecting commonjs.
                             "@babel/plugin-transform-modules-commonjs",
                         ],
                         "presets": [

@@ -44,7 +44,7 @@ function _createSetState(state) {
     };
 }
 
-var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
+var fields = ["component","id","interfaces","metadata","name","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","powerDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
 ];
 for (var field of fields) {
     Object.defineProperty(ScryptedDeviceBase.prototype, field, {
@@ -180,6 +180,7 @@ module.exports.ScryptedInterface = {
   Settings: "Settings",
   BinarySensor: "BinarySensor",
   IntrusionSensor: "IntrusionSensor",
+  PowerSensor: "PowerSensor",
   AudioSensor: "AudioSensor",
   MotionSensor: "MotionSensor",
   OccupancySensor: "OccupancySensor",
@@ -474,6 +475,14 @@ module.exports.ScryptedInterfaceDescriptors = {
       name: "IntrusionSensor",
       properties: [
         "intrusionDetected",
+      ],
+      methods: [
+      ]
+  },
+  PowerSensor: {
+      name: "PowerSensor",
+      properties: [
+        "powerDetected",
       ],
       methods: [
       ]
