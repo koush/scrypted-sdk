@@ -1,3 +1,5 @@
+const { Buffer } = require('buffer');
+
 // QuickJS has ArrayBuffer but not Buffer.
 // Attempt to convert the Buffer object to ArrayBuffer,
 // and vice versa, when they are encountered.
