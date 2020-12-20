@@ -99,12 +99,12 @@ module.exports = {
             _websocket: path.resolve(__dirname, 'polyfill/websocket.js'),
 
             // node polyfills
-            dgram: path.resolve(__dirname, 'polyfill/dgram'),
+            dgram: path.resolve(__dirname, 'polyfill/duktape/dgram'),
             cluster: path.resolve(__dirname, 'polyfill/cluster'),
-            os: path.resolve(__dirname, 'polyfill/os'),
-            net: path.resolve(__dirname, 'polyfill/net'),
-            tls: path.resolve(__dirname, 'polyfill/tls'),
-            fs: path.resolve(__dirname, 'polyfill/fs'),
+            os: path.resolve(__dirname, 'polyfill/duktape/os'),
+            net: path.resolve(__dirname, 'polyfill/duktape/net'),
+            tls: path.resolve(__dirname, 'polyfill/duktape/tls'),
+            fs: path.resolve(__dirname, 'polyfill/duktape/fs'),
             mdns: path.resolve(__dirname, 'polyfill/mdns'),
             buffer: path.resolve(__dirname, 'polyfill/duktape/buffer'),
             buffertools: path.resolve(__dirname, 'node_modules/browserify-buffertools'),
@@ -125,8 +125,8 @@ module.exports = {
         new InjectPlugin(function () {
             return ''
             + fs.readFileSync(path.resolve(__dirname, 'inject/duktape/buffer.js'))
-            + fs.readFileSync(path.resolve(__dirname, 'inject/xmlhttprequest.js'))
-            + fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'))
+            + fs.readFileSync(path.resolve(__dirname, 'inject/duktape/xmlhttprequest.js'))
+            + fs.readFileSync(path.resolve(__dirname, 'inject/duktape/inject.js'))
             ;
         }),
         new webpack.DefinePlugin({

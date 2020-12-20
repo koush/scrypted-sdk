@@ -89,17 +89,8 @@ module.exports = {
 
             // browser provide plugin polyfills
             _websocket: path.resolve(__dirname, 'polyfill/websocket.js'),
-
-            // node polyfills
-            // dgram: path.resolve(__dirname, 'polyfill/dgram'),
             cluster: path.resolve(__dirname, 'polyfill/cluster'),
-            // os: path.resolve(__dirname, 'polyfill/os'),
-            // net: path.resolve(__dirname, 'polyfill/net'),
-            // tls: path.resolve(__dirname, 'polyfill/tls'),
-            // fs: path.resolve(__dirname, 'polyfill/fs'),
             mdns: path.resolve(__dirname, 'polyfill/mdns'),
-            // buffer: path.resolve(__dirname, 'polyfill/buffer'),
-            // buffertools: path.resolve(__dirname, 'node_modules/browserify-buffertools'),
         },
 
         extensions: ['.tsx', '.ts', '.js']
@@ -114,8 +105,6 @@ module.exports = {
         new InjectPlugin(function () {
             return ''
             + fs.readFileSync(path.resolve(__dirname, 'inject/quickjs/buffer.js'))
-            // + fs.readFileSync(path.resolve(__dirname, 'inject/xmlhttprequest.js'))
-            // + fs.readFileSync(path.resolve(__dirname, 'inject/inject.js'))
             ;
         }),
         new webpack.DefinePlugin({
