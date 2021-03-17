@@ -1,5 +1,5 @@
 import { inherits } from 'util';
-import { DuplexSocket } from '../lib/duplex-socket';
+import { DuplexSocket } from '../../lib/duplex-socket';
 
 function Socket() {
     DuplexSocket.call(this, {});

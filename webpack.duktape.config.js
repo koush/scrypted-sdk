@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const InjectPlugin = require('webpack-inject-plugin').default;
 const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var out;
 const cwd = process.cwd();
@@ -121,7 +120,6 @@ module.exports = {
     },
 
     plugins: [
-        new CleanWebpackPlugin(),
         new InjectPlugin(function () {
             return ''
             + fs.readFileSync(path.resolve(__dirname, 'inject/duktape/buffer.js'))

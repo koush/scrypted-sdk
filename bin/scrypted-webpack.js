@@ -6,6 +6,7 @@ const spawn = require('child_process').spawn;
 const cwd = process.cwd();
 const AdmZip = require('adm-zip');
 const os = require('os');
+const rimraf = require('rimraf');
 
 var entry;
 for (var search of ['src/main.js', 'src/main.ts']) {
@@ -17,13 +18,17 @@ for (var search of ['src/main.js', 'src/main.ts']) {
 }
 
 const runtimes = [
+    // {
+    //     config: 'webpack.duktape.config.js',
+    //     output: 'main.js',
+    // },
+    // {
+    //     config: 'webpack.quickjs.config.js',
+    //     output: 'main.quickjs.js',
+    // },
     {
-        config: 'webpack.duktape.config.js',
-        output: 'main.js',
-    },
-    {
-        config: 'webpack.quickjs.config.js',
-        output: 'main.quickjs.js',
+        config: 'webpack.nodejs.config.js',
+        output: 'main.nodejs.js',
     },
 ];
 
@@ -45,6 +50,9 @@ if (os.platform().startsWith('win')) {
 var zip = new AdmZip();
 
 async function pack() {
+    if (out)
+        rimraf.sync(out);
+    
     for (runtime of runtimes) {
         await new Promise((resolve, reject) => {
             var webpackConfig;
@@ -104,5 +112,6 @@ async function pack() {
 
 pack()
 .catch(e => process.nextTick(() => {
+    console.error(e);
     throw new Error(e);
 }));
