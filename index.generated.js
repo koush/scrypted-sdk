@@ -44,7 +44,7 @@ function _createSetState(state) {
     };
 }
 
-var fields = ["component","id","interfaces","metadata","name","providedName","providedType","providerId","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","powerDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
+var fields = ["component","id","interfaces","metadata","name","providedName","providedRoom","providedType","providerId","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","powerDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
 ];
 for (var field of fields) {
     Object.defineProperty(ScryptedDeviceBase.prototype, field, {

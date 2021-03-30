@@ -9,6 +9,7 @@ export interface DeviceState {
   metadata?: any;
   name?: string;
   providedName?: ScryptedDeviceType;
+  providedRoom?: string;
   providedType?: ScryptedDeviceType;
   providerId?: string;
   room?: string;
@@ -73,6 +74,7 @@ export interface ScryptedDevice {
   metadata?: any;
   name?: string;
   providedName?: ScryptedDeviceType;
+  providedRoom?: string;
   providedType?: ScryptedDeviceType;
   providerId?: string;
   room?: string;
@@ -217,7 +219,7 @@ export interface Notifier {
    * If a the media parameter is supplied, the mime type denotes how to send the media within notification. For example, specify 'image/*' to send a video MediaObject as an image.
 Passing null uses the native type of the MediaObject. If that is not supported by the notifier, the media will be converted to a compatible type.
    */
-  sendNotification(title: string, body: string, media: URL|MediaObject, mimeType: string): void;
+  sendNotification(title: string, body: string, media: string|MediaObject, mimeType: string): void;
 
 }
 /**
@@ -302,14 +304,14 @@ export enum ThermostatMode {
  * Camera devices can take still photos.
  */
 export interface Camera {
-  takePicture(): MediaObject;
+  takePicture(): Promise<MediaObject>;
 
 }
 /**
  * VideoCamera devices can capture video streams.
  */
 export interface VideoCamera {
-  getVideoStream(): MediaObject;
+  getVideoStream(): Promise<MediaObject>;
 
 }
 /**
@@ -462,10 +464,10 @@ export interface SoftwareUpdate {
   updateAvailable?: boolean;
 }
 /**
- * Add a converter to be used by Scrypted to convert buffers from one mime type to another mime type.
+ * Add a converter to be used by Scrypted to convert buffers from one mime type to another mime type. May optionally accept string urls if accept-url is a fromMimeType parameter.
  */
 export interface BufferConverter {
-  convert(buffer: Buffer, fromMimeType: string): Promise<Buffer>;
+  convert(data: string|Buffer, fromMimeType: string): Promise<Buffer|string>;
 
   fromMimeType?: string;
   toMimeType?: string;
@@ -594,27 +596,27 @@ export interface MediaManager {
   /**
    * Convert a media object to a Buffer of the given mime type.
    */
-  convertMediaObjectToBuffer(mediaObject: MediaObject, toMimeType: string): Promise<Buffer>;
+  convertMediaObjectToBuffer(mediaObject: string|MediaObject, toMimeType: string): Promise<Buffer>;
 
   /**
    * Convert a media object to a locally accessible URL that serves a media file of the given mime type. If the media object is an externally accessible URL, that will be returned.
    */
-  convertMediaObjectToInsecureLocalUrl(mediaObject: MediaObject, toMimeType: string): Promise<string>;
+  convertMediaObjectToInsecureLocalUrl(mediaObject: string|MediaObject, toMimeType: string): Promise<string>;
 
   /**
    * Convert a media object to a locally accessible URL that serves a media file of the given mime type. If the media object is an externally accessible URL, that will be returned.
    */
-  convertMediaObjectToLocalUrl(mediaObject: MediaObject, toMimeType: string): Promise<string>;
+  convertMediaObjectToLocalUrl(mediaObject: string|MediaObject, toMimeType: string): Promise<string>;
 
   /**
    * Convert a media object to a publically accessible URL that serves a media file of the given mime type.
    */
-  convertMediaObjectToUrl(mediaObject: MediaObject, toMimeType: string): Promise<string>;
+  convertMediaObjectToUrl(mediaObject: string|MediaObject, toMimeType: string): Promise<string>;
 
   /**
    * Create a MediaObject. The media will be created from the provided FFmpeg input arguments.
    */
-  createFFmpegMediaObject(ffMpegInput: FFMpegInput): MediaObject;
+  createFFmpegMediaObject(ffmpegInput: FFMpegInput): MediaObject;
 
   /**
    * Create a MediaObject. The mime type needs to be provided up front, but the data can be a URL string, Buffer, or a Promise for a URL string or Buffer.
@@ -955,6 +957,7 @@ export enum ScryptedInterfaceProperty {
     metadata = "metadata",
     name = "name",
     providedName = "providedName",
+    providedRoom = "providedRoom",
     providedType = "providedType",
     providerId = "providerId",
     room = "room",
@@ -993,10 +996,21 @@ export enum ScryptedInterfaceProperty {
     position = "position",
 }
 
+export interface RTCAVMessage {
+  id: string;
+  description: RTCSessionDescriptionInit;
+  candidates: RTCIceCandidateInit[];
+  configuration: RTCConfiguration;
+}
+
 export enum ScryptedMimeTypes {
+  AcceptUrlParameter = 'accept-url',
   Url = 'text/x-uri',
   InsecureLocalUrl = 'text/x-insecure-local-uri',
   LocalUrl = 'text/x-local-uri',
+  FFmpegInput = 'x-scrypted/x-ffmpeg-input',
+  RTCAVOffer = 'x-scrypted/x-rtc-av-offer',
+  RTCAVAnswer = 'x-scrypted/x-rtc-av-answer',
 }
 
 // export interface ZwaveManagerDevice extends ZwaveManager, ScryptedDevice {

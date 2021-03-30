@@ -7,6 +7,8 @@ const cwd = process.cwd();
 const AdmZip = require('adm-zip');
 const os = require('os');
 const rimraf = require('rimraf');
+const webpack = require('webpack');
+const { runtime } = require('webpack');
 
 var entry;
 for (var search of ['src/main.js', 'src/main.ts']) {
@@ -44,19 +46,24 @@ if (!entry) {
 }
 
 var webpackCmd = path.resolve(cwd, 'node_modules/.bin/webpack-cli');
+if (!fs.existsSync(webpackCmd)) {
+    webpackCmd = path.resolve(cwd, 'node_modules/@scrypted/sdk/node_modules/.bin/webpack-cli')
+}
 if (os.platform().startsWith('win')) {
     webpackCmd += '.cmd';
 }
 var zip = new AdmZip();
 
+const NODE_PATH = path.resolve(__dirname, '..', 'node_modules');
+
 async function pack() {
     if (out)
         rimraf.sync(out);
     
-    for (runtime of runtimes) {
+    for (const runtime of runtimes) {
         await new Promise((resolve, reject) => {
             var webpackConfig;
-            var customWebpackConfig = path.resolve(cwd, 'webpack.config.js');
+            var customWebpackConfig = path.resolve(cwd, runtime.config);
             const defaultWebpackConfig = path.resolve(__dirname, '..', runtime.config);
             if (fs.existsSync(customWebpackConfig)) {
                 webpackConfig = customWebpackConfig;
@@ -64,7 +71,7 @@ async function pack() {
             else {
                 webpackConfig = defaultWebpackConfig;
             }
-        
+
             var child = spawn(webpackCmd, [
                 // "--json",
                 '--config',
@@ -77,6 +84,7 @@ async function pack() {
                 "main=" + entry,
             ], {
                 env: Object.assign({},process.env, {
+                    NODE_PATH,
                     SCRYPTED_DEFAULT_WEBPACK_CONFIG: defaultWebpackConfig,
                 }),
             });

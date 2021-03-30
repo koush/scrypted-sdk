@@ -118,6 +118,7 @@ module.exports.ScryptedInterfaceDescriptors = {
         "metadata",
         "name",
         "providedName",
+        "providedRoom",
         "providedType",
         "providerId",
         "room",
@@ -549,6 +550,7 @@ module.exports.ScryptedInterfaceProperty = {
     metadata: "metadata",
     name: "name",
     providedName: "providedName",
+    providedRoom: "providedRoom",
     providedType: "providedType",
     providerId: "providerId",
     room: "room",
@@ -588,7 +590,11 @@ module.exports.ScryptedInterfaceProperty = {
 }
 
 module.exports.ScryptedMimeTypes = {
+  AcceptUrlParameter: 'accept-url',
   Url: 'text/x-uri',
   InsecureLocalUrl: 'text/x-insecure-local-uri',
   LocalUrl: 'text/x-local-uri',
+  FFmpegInput: 'x-scrypted/x-ffmpeg-input',
+  RTCAVOffer: 'x-scrypted/x-rtc-av-offer',
+  RTCAVAnswer: 'x-scrypted/x-rtc-av-answer',
 }

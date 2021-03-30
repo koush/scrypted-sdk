@@ -38,17 +38,18 @@ module.exports = {
                             "@babel/plugin-proposal-class-properties",
                             // currently still necessary due to how Quack evaluates expecting commonjs.
                             "@babel/plugin-transform-modules-commonjs",
+                            "@babel/plugin-proposal-optional-chaining",
                         ],
                         "presets": [
                             [
-                                "@babel/preset-env",
-                                {
-                                    "targets": {
-                                        "chrome": "78",
-                                    },
-                                    "useBuiltIns": "usage",
-                                    "corejs": "2",
-                                },
+                                // "@babel/preset-env",
+                                // {
+                                //     "targets": {
+                                //         "chrome": "78",
+                                //     },
+                                //     "useBuiltIns": "usage",
+                                //     "corejs": "2",
+                                // },
                                 "@babel/typescript",
                             ],
                         ]
@@ -74,7 +75,12 @@ module.exports = {
     },
     target: "node",
 
+    resolveLoader: {
+        modules: module.paths,
+
+    },
     resolve: {
+
         alias: {
             ByteBuffer: "bytebuffer",
             Long: "long",

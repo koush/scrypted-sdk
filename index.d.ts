@@ -12,6 +12,7 @@ export class ScryptedDeviceBase implements DeviceState {
   metadata?: any;
   name?: string;
   providedName?: ScryptedDeviceType;
+  providedRoom?: string;
   providedType?: ScryptedDeviceType;
   providerId?: string;
   room?: string;
