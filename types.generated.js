@@ -28,6 +28,7 @@ module.exports.ScryptedDeviceType = {
   DeviceProvider: "DeviceProvider",
   DataSource: "DataSource",
   API: "API",
+  Doorbell: "Doorbell",
   Unknown: "Unknown",
 }
 module.exports.TemperatureUnit = {
