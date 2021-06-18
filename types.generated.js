@@ -103,8 +103,8 @@ module.exports.ScryptedInterface = {
   MessagingEndpoint: "MessagingEndpoint",
   OauthClient: "OauthClient",
   Android: "Android",
+  MixinProvider: "MixinProvider",
   HttpRequestHandler: "HttpRequestHandler",
-  EndpointHandler: "EndpointHandler",
   EngineIOHandler: "EngineIOHandler",
   PushHandler: "PushHandler",
 }
@@ -118,6 +118,7 @@ module.exports.ScryptedInterfaceDescriptors = {
         "interfaces",
         "metadata",
         "name",
+        "providedInterfaces",
         "providedName",
         "providedRoom",
         "providedType",
@@ -510,20 +511,21 @@ module.exports.ScryptedInterfaceDescriptors = {
         "startService",
       ]
   },
+  MixinProvider: {
+      name: "MixinProvider",
+      properties: [
+      ],
+      methods: [
+        "canMixin",
+        "getMixin",
+      ]
+  },
   HttpRequestHandler: {
       name: "HttpRequestHandler",
       properties: [
       ],
       methods: [
         "onRequest",
-      ]
-  },
-  EndpointHandler: {
-      name: "EndpointHandler",
-      properties: [
-      ],
-      methods: [
-        "getEndpoint",
       ]
   },
   EngineIOHandler: {
@@ -550,6 +552,7 @@ module.exports.ScryptedInterfaceProperty = {
     interfaces: "interfaces",
     metadata: "metadata",
     name: "name",
+    providedInterfaces: "providedInterfaces",
     providedName: "providedName",
     providedRoom: "providedRoom",
     providedType: "providedType",

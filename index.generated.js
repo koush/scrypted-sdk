@@ -29,6 +29,17 @@ class ScryptedDeviceBase {
     }
 }
 
+
+class MixinDeviceBase {
+    constructor(mixinDevice, deviceState) {
+        this.mixinDevice = mixinDevice;
+        this._deviceState = deviceState;
+    }
+
+    _lazyLoadDeviceState() {
+    }
+}
+
 (function() {
 function _createGetState(state) {
     return function() {
@@ -44,10 +55,14 @@ function _createSetState(state) {
     };
 }
 
-var fields = ["component","id","interfaces","metadata","name","providedName","providedRoom","providedType","providerId","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","powerDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
+var fields = ["component","id","interfaces","metadata","name","providedInterfaces","providedName","providedRoom","providedType","providerId","room","type","on","brightness","colorTemperature","rgb","hsv","running","paused","docked","temperature","temperatureUnit","humidity","thermostatAvailableModes","thermostatMode","thermostatSetpoint","thermostatSetpointHigh","thermostatSetpointLow","lockState","entryOpen","batteryLevel","online","updateAvailable","fromMimeType","toMimeType","binaryState","intrusionDetected","powerDetected","motionDetected","occupied","flooded","ultraviolet","luminance","position",
 ];
 for (var field of fields) {
     Object.defineProperty(ScryptedDeviceBase.prototype, field, {
+        set: _createSetState(field),
+        get: _createGetState(field),
+    });
+    Object.defineProperty(MixinDeviceBase.prototype, field, {
         set: _createSetState(field),
         get: _createGetState(field),
     });
@@ -57,6 +72,7 @@ for (var field of fields) {
 
 const sdk = {
     ScryptedDeviceBase,
+    MixinDeviceBase,
 }
 
 const types = require('./types.generated.js');

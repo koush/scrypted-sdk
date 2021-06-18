@@ -8,6 +8,7 @@ export interface DeviceState {
   interfaces?: string[];
   metadata?: any;
   name?: string;
+  providedInterfaces?: string[];
   providedName?: ScryptedDeviceType;
   providedRoom?: string;
   providedType?: ScryptedDeviceType;
@@ -62,17 +63,18 @@ export interface ScryptedDevice {
    */
   listen(event: ScryptedInterface|string|EventListenerOptions, callback: (eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: any) => void): EventListenerRegister;
 
-  setName(name: string): void;
+  setName(name: string): Promise<void>;
 
-  setRoom(room: string): void;
+  setRoom(room: string): Promise<void>;
 
-  setType(type: ScryptedDeviceType): void;
+  setType(type: ScryptedDeviceType): Promise<void>;
 
   component?: string;
   id?: string;
   interfaces?: string[];
   metadata?: any;
   name?: string;
+  providedInterfaces?: string[];
   providedName?: ScryptedDeviceType;
   providedRoom?: string;
   providedType?: ScryptedDeviceType;
@@ -98,7 +100,7 @@ export interface EventListener {
   /**
    * This device type can be hooked by Automation actions to handle events. The event source, event details (interface, time, property), and event data are all passed to the listener as arguments.
    */
-  onEvent(eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: any): void;
+  onEvent(eventSource: ScryptedDevice|null, eventDetails: EventDetails, eventData: any): Promise<void>;
 
 }
 export interface EventDetails {
@@ -145,9 +147,9 @@ export enum ScryptedDeviceType {
  * OnOff is a basic binary switch.
  */
 export interface OnOff {
-  turnOff(): void;
+  turnOff(): Promise<void>;
 
-  turnOn(): void;
+  turnOn(): Promise<void>;
 
   on?: boolean;
 }
@@ -155,7 +157,7 @@ export interface OnOff {
  * Brightness is a lighting device that can be dimmed/lit between 0 to 100.
  */
 export interface Brightness {
-  setBrightness(brightness: number): void;
+  setBrightness(brightness: number): Promise<void>;
 
   brightness?: number;
 }
@@ -167,7 +169,7 @@ export interface ColorSettingTemperature {
 
   getTemperatureMinK(): Promise<number>;
 
-  setColorTemperature(kelvin: number): void;
+  setColorTemperature(kelvin: number): Promise<void>;
 
   colorTemperature?: number;
 }
@@ -175,7 +177,7 @@ export interface ColorSettingTemperature {
  * ColorSettingRgb sets the color of a colored light using the RGB representation.
  */
 export interface ColorSettingRgb {
-  setRgb(r: number, g: number, b: number): void;
+  setRgb(r: number, g: number, b: number): Promise<void>;
 
   rgb?: ColorRgb;
 }
@@ -191,7 +193,7 @@ export interface ColorRgb {
  * ColorSettingHsv sets the color of a colored light using the HSV representation.
  */
 export interface ColorSettingHsv {
-  setHsv(hue: number, saturation: number, value: number): void;
+  setHsv(hue: number, saturation: number, value: number): Promise<void>;
 
   hsv?: ColorHsv;
 }
@@ -220,7 +222,7 @@ export interface Notifier {
    * If a the media parameter is supplied, the mime type denotes how to send the media within notification. For example, specify 'image/*' to send a video MediaObject as an image.
 Passing null uses the native type of the MediaObject. If that is not supported by the notifier, the media will be converted to a compatible type.
    */
-  sendNotification(title: string, body: string, media: string|MediaObject, mimeType: string): void;
+  sendNotification(title: string, body: string, media: string|MediaObject, mimeType: string): Promise<void>;
 
 }
 /**
@@ -233,16 +235,16 @@ export interface MediaObject {
  * StartStop represents a device that can be started, stopped, and possibly paused and resumed. Typically vacuum cleaners or washers.
  */
 export interface StartStop {
-  start(): void;
+  start(): Promise<void>;
 
-  stop(): void;
+  stop(): Promise<void>;
 
   running?: boolean;
 }
 export interface Pause {
-  pause(): void;
+  pause(): Promise<void>;
 
-  resume(): void;
+  resume(): Promise<void>;
 
   paused?: boolean;
 }
@@ -250,7 +252,7 @@ export interface Pause {
  * Dock instructs devices that have a base station or charger, to return to their home.
  */
 export interface Dock {
-  dock(): void;
+  dock(): Promise<void>;
 
   docked?: boolean;
 }
@@ -258,13 +260,13 @@ export interface Dock {
  * TemperatureSetting represents a thermostat device.
  */
 export interface TemperatureSetting extends Thermometer, HumiditySensor {
-  setThermostatMode(mode: ThermostatMode): void;
+  setThermostatMode(mode: ThermostatMode): Promise<void>;
 
-  setThermostatSetpoint(degrees: number): void;
+  setThermostatSetpoint(degrees: number): Promise<void>;
 
-  setThermostatSetpointHigh(high: number): void;
+  setThermostatSetpointHigh(high: number): Promise<void>;
 
-  setThermostatSetpointLow(low: number): void;
+  setThermostatSetpointLow(low: number): Promise<void>;
 
   thermostatAvailableModes?: ThermostatMode[];
   thermostatMode?: ThermostatMode;
@@ -319,9 +321,9 @@ export interface VideoCamera {
  * Lock controls devices that can lock or unlock entries. Often works in tandem with PasswordControl.
  */
 export interface Lock {
-  lock(): void;
+  lock(): Promise<void>;
 
-  unlock(): void;
+  unlock(): Promise<void>;
 
   lockState?: LockState;
 }
@@ -334,11 +336,11 @@ export enum LockState {
  * PasswordControl represents devices that authorize users via a passcode or pin code.
  */
 export interface PasswordStore extends Authenticator {
-  addPassword(password: string): void;
+  addPassword(password: string): Promise<void>;
 
   getPasswords(): Promise<string[]>;
 
-  removePassword(password: string): void;
+  removePassword(password: string): Promise<void>;
 
 }
 /**
@@ -352,9 +354,9 @@ export interface Authenticator {
  * Scenes control multiple different devices into a given state.
  */
 export interface Scene {
-  activate(): void;
+  activate(): Promise<void>;
 
-  deactivate(): void;
+  deactivate(): Promise<void>;
 
   /**
    * If a scene can be reversed, isReversible should return true. Otherwise deactivate will not be called.
@@ -366,9 +368,9 @@ export interface Scene {
  * Entry represents devices that can open and close barriers, such as garage doors.
  */
 export interface Entry extends EntrySensor {
-  closeEntry(): void;
+  closeEntry(): Promise<void>;
 
-  openEntry(): void;
+  openEntry(): Promise<void>;
 
 }
 export interface EntrySensor {
@@ -381,7 +383,7 @@ export interface DeviceProvider {
   /**
    * Perform device discovery for the specified duration in seconds.
    */
-  discoverDevices(duration: number): void;
+  discoverDevices(duration: number): Promise<void>;
 
   /**
    * Get an instance of a previously discovered device that was reported to the device manager.
@@ -407,39 +409,28 @@ export interface Refresh {
   /**
    * This method is called by Scrypted when the properties of the device need to be refreshed. When the device has completed the refresh, the appropriate DeviceState properties should be set. The parameters provide the specific interface that needs to be refreshed and whether it was user initiated (via UI or voice).
    */
-  refresh(refreshInterface: string, userInitiated: boolean): void;
+  refresh(refreshInterface: string, userInitiated: boolean): Promise<void>;
 
 }
 /**
  * MediaPlayer allows media playback on screen or speaker devices, such as Chromecasts or TVs.
  */
 export interface MediaPlayer extends StartStop, Pause {
-  getMediaStatus(): MediaStatus;
+  getMediaStatus(): Promise<MediaStatus>;
 
-  load(media: URL|MediaObject, options: MediaPlayerOptions): void;
+  load(media: string|MediaObject, options: MediaPlayerOptions): Promise<void>;
 
-  seek(milliseconds: number): void;
+  seek(milliseconds: number): Promise<void>;
 
-  skipNext(): void;
+  skipNext(): Promise<void>;
 
-  skipPrevious(): void;
+  skipPrevious(): Promise<void>;
 
-}
-export interface MediaStatus {
-  duration?: number;
-  mediaPlayerState?: MediaPlayerState;
-  metadata?: any;
-  position?: number;
-}
-export enum MediaPlayerState {
-  Idle = "Idle",
-  Playing = "Playing",
-  Paused = "Paused",
-  Buffering = "Buffering",
 }
 export interface MediaPlayerOptions {
   autoplay?: boolean;
   mimeType?: string;
+  title?: string;
 }
 /**
  * Online denotes whether the device is online or unresponsive. It may be unresponsive due to being unplugged, network error, etc.
@@ -458,9 +449,9 @@ export interface Program {
  * SoftwareUpdate provides a way to check for updates and install them. This may be a Scrypted Plugin or device firmware.
  */
 export interface SoftwareUpdate {
-  checkForUpdate(): void;
+  checkForUpdate(): Promise<void>;
 
-  installUpdate(): void;
+  installUpdate(): Promise<void>;
 
   updateAvailable?: boolean;
 }
@@ -479,7 +470,7 @@ export interface BufferConverter {
 export interface Settings {
   getSettings(): Promise<Setting[]>;
 
-  putSetting(key: string, value: boolean|number|string): void;
+  putSetting(key: string, value: boolean|number|string): Promise<void>;
 
 }
 export interface BinarySensor {
@@ -590,7 +581,7 @@ export interface OauthClient {
   /**
    * When an oauth request by a plugin completes, the callback url, with the code/token, will be passed to this method.
    */
-  onOauthCallback(callbackUrl: string): void;
+  onOauthCallback(callbackUrl: string): Promise<void>;
 
 }
 export interface MediaManager {
@@ -814,28 +805,36 @@ export interface Android {
    */
   newIntent(): Intent;
 
-  sendBroadcast(intent: Intent): void;
+  sendBroadcast(intent: Intent): Promise<void>;
 
-  startActivity(intent: Intent): void;
+  startActivity(intent: Intent): Promise<void>;
 
-  startService(intent: Intent): void;
+  startService(intent: Intent): Promise<void>;
+
+}
+/**
+ * MixinProviders can add and intercept interfaces to other devices to add or augment their behavior.
+ */
+export interface MixinProvider {
+  /**
+   * Called by the system to determine if this provider can create a mixin for the supplied device. Returns null if a mixin can not be created, otherwise returns a list of new interfaces (which may be an empty list) that are provided by the mixin.
+   */
+  canMixin(type: ScryptedDeviceType, interfaces: string[]): string[];
+
+  /**
+   * Create a mixin that can be applied to the supplied device.
+   */
+  getMixin(device: ScryptedDevice, deviceState: any): any;
 
 }
 /**
  * The HttpRequestHandler allows handling of web requests under the endpoint path: /endpoint/npm-package-name/*.
  */
-export interface HttpRequestHandler extends EndpointHandler {
+export interface HttpRequestHandler {
   /**
    * Callback to handle an incoming request.
    */
-  onRequest(request: HttpRequest, response: HttpResponse): void;
-
-}
-export interface EndpointHandler {
-  /**
-   * Get the preferred endpoint of this HTTP/Push/EngineIO handler. Local/development scripts can set this to any value. This is ignored if the plugin is installed via npm: the endpoint will always be the npm package name.
-   */
-  getEndpoint(): string;
+  onRequest(request: HttpRequest, response: HttpResponse): Promise<void>;
 
 }
 export interface HttpRequest {
@@ -868,15 +867,15 @@ export interface HttpResponseOptions {
   code?: number;
   headers?: object;
 }
-export interface EngineIOHandler extends EndpointHandler {
-  onConnection(request: HttpRequest, webSocketUrl: string): void;
+export interface EngineIOHandler {
+  onConnection(request: HttpRequest, webSocketUrl: string): Promise<void>;
 
 }
-export interface PushHandler extends EndpointHandler {
+export interface PushHandler {
   /**
    * Callback to handle an incoming push.
    */
-  onPush(request: HttpRequest): void;
+  onPush(request: HttpRequest): Promise<void>;
 
 }
 export interface SystemDeviceState {
@@ -889,6 +888,18 @@ export interface SystemDeviceState {
    */
   stateTime?: number;
   value?: any;
+}
+export interface MediaStatus {
+  duration?: number;
+  mediaPlayerState?: MediaPlayerState;
+  metadata?: any;
+  position?: number;
+}
+export enum MediaPlayerState {
+  Idle = "Idle",
+  Playing = "Playing",
+  Paused = "Paused",
+  Buffering = "Buffering",
 }
 export interface Setting {
   choices?: string[];
@@ -945,8 +956,8 @@ export enum ScryptedInterface {
   MessagingEndpoint = "MessagingEndpoint",
   OauthClient = "OauthClient",
   Android = "Android",
+  MixinProvider = "MixinProvider",
   HttpRequestHandler = "HttpRequestHandler",
-  EndpointHandler = "EndpointHandler",
   EngineIOHandler = "EngineIOHandler",
   PushHandler = "PushHandler",
 }
@@ -957,6 +968,7 @@ export enum ScryptedInterfaceProperty {
     interfaces = "interfaces",
     metadata = "metadata",
     name = "name",
+    providedInterfaces = "providedInterfaces",
     providedName = "providedName",
     providedRoom = "providedRoom",
     providedType = "providedType",
